@@ -1,0 +1,47 @@
+name: ETD Box
+
+output: false
+remote: ["192.168.1.100"]
+
+login:
+  username: abc
+
+  password: abc
+
+logger:
+  output: "/local/logger.txt"
+
+steps:
+  - run: wget https://github.com/file.txt
+
+    catch_err: false
+
+  - run: ls
+
+  - files:
+      - local: a
+        remote: b
+      - local: c
+        remote: d
+  - directory:
+      local: a
+      remote: b
+
+  - run: python3 a.py
+    with_root: true
+
+    env:
+      - a=hello
+
+    cwd: /usr/local/project
+
+  - name: Run command
+
+    run: ls
+
+    catch_err: false
+
+    env:
+      - a=hello
+
+    cwd: /usr/local
