@@ -103,7 +103,6 @@ test("test start from config", async () => {
     }
     let results = await config.runRemoteCommand({});
     expect(results?.length).toBe(2)
-
 })
 
 
