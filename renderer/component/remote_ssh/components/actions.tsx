@@ -7,12 +7,12 @@ import {
   CheckCircleOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Config } from "remote-ssh";
 import { database_names } from "../../../../configurations/database_names";
 import PouchDB from "pouchdb";
 import { useRouter } from "next/router";
 import { RemoteSshContext } from "../../../models/remoteSSH";
 import { ipcRenderer } from "electron";
+// import { dialog } from "@electron/remote";
 
 type Props = {};
 
@@ -93,7 +93,7 @@ export function RemoteActions(props: Props) {
           <Form.Item label={"File Path"} name={"filePath"}>
             <Button
               onClick={async () => {
-                const { dialog } = require("electron").remote;
+                const { dialog } = require("@electron/remote");
                 let result = await dialog.showOpenDialog({
                   filters: [{ name: "Yaml", extensions: ["yml", "yaml"] }],
                 });

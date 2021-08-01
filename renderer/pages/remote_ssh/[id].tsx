@@ -1,8 +1,8 @@
 // @flow
 import * as React from "react";
 import { Tabs } from "antd";
-import ConfigDetails from "./components/ConfigDetails";
-import { WorkerDetail } from "./components/WorkerDetail";
+import ConfigDetails from "../../component/remote_ssh/components/ConfigDetails";
+import { WorkerDetail } from "../../component/remote_ssh/components/WorkerDetail";
 
 type Props = {};
 

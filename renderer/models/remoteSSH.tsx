@@ -2,7 +2,7 @@
 import * as React from "react";
 import PouchDB from "pouchdb";
 import { ConfigParser, Config, WorkerStatus } from "remote-ssh";
-import { SavedConfiguration } from "../pages/remote_ssh/interface";
+import { SavedConfiguration } from "../component/remote_ssh/interface";
 import YAML from "yaml";
 import { message } from "antd";
 import { database_names } from "../../configurations/database_names";

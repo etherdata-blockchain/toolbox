@@ -2,7 +2,7 @@ import { AppProps } from "next/app";
 import { RemoteSshProvider } from "../models/remoteSSH";
 import { CodepenOutlined, HomeOutlined } from "@ant-design/icons";
 import { PageLayout } from "../component/pageLayout";
-import { RemoteActions } from "./remote_ssh/components/actions";
+import { RemoteActions } from "../component/remote_ssh/components/actions";
 import "antd/dist/antd.css";
 import "../styles/Global.css";
 import path from "path";
