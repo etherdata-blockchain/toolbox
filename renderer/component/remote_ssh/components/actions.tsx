@@ -11,8 +11,7 @@ import { database_names } from "../../../../configurations/database_names";
 import PouchDB from "pouchdb";
 import { useRouter } from "next/router";
 import { RemoteSshContext } from "../../../models/remoteSSH";
-import { ipcRenderer } from "electron";
-// import { dialog } from "@electron/remote";
+import electron, { ipcRenderer } from "electron";
 
 type Props = {};
 
@@ -22,6 +21,7 @@ export function RemoteActions(props: Props) {
   const router = useRouter();
   const [form] = Form.useForm();
   const { savedConfig, isRunning } = React.useContext(RemoteSshContext);
+  const remote = electron.remote || false
 
   const run = React.useCallback(() => {
     if (isRunning) {
@@ -30,6 +30,18 @@ export function RemoteActions(props: Props) {
       ipcRenderer.send("start", savedConfig.filePath);
     }
   }, [savedConfig, isRunning]);
+
+  const pickFile = React.useCallback(async ()=>{
+      if(remote){
+          let result = await remote.dialog.showOpenDialog({
+              filters: [{ name: "Yaml", extensions: ["yml", "yaml", "YML", "YAML"] }],
+          });
+          if (!result.canceled) {
+              setFilePath(result.filePaths[0]);
+          }
+      }
+
+  }, [remote])
 
   return (
     <Row>
@@ -92,15 +104,7 @@ export function RemoteActions(props: Props) {
           </Form.Item>
           <Form.Item label={"File Path"} name={"filePath"}>
             <Button
-              onClick={async () => {
-                const { dialog } = require("@electron/remote");
-                let result = await dialog.showOpenDialog({
-                  filters: [{ name: "Yaml", extensions: ["yml", "yaml"] }],
-                });
-                if (!result.canceled) {
-                  setFilePath(result.filePaths[0]);
-                }
-              }}
+              onClick={pickFile}
             >
               Open File
               {filePath && <CheckCircleOutlined style={{ color: "green" }} />}

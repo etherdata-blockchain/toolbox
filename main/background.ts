@@ -6,6 +6,8 @@ import { cancelable, CancelablePromise } from "cancelable-promise";
 import Logger from "remote-ssh/dist/logger";
 import { onWorkerCommand, onWorkerError } from "./helpers/worker-callbacks";
 
+require("@electron/remote/main").initialize()
+
 const isProd: boolean = process.env.NODE_ENV === "production";
 // Indicate whether remote ssh is running
 let isStarted = false;

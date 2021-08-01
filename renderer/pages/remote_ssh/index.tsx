@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { Button, Card, Col, List, Row, Typography } from "antd";
+import {Button, Card, Col, List, message, Row, Typography} from "antd";
 import PouchDB from "pouchdb";
 import { database_names } from "../../../configurations/database_names";
 import Link from "next/link";
@@ -31,11 +31,7 @@ export default function Index({}: Props) {
         await db.remove(doc);
       }
     } catch (err) {
-      const { dialog } = require("@electron/remote");
-      await dialog.showMessageBox({
-        message: "Cannot delete document. " + err,
-        type: "error",
-      });
+      message.error(err.toString())
     }
   }, []);
 

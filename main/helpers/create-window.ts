@@ -5,6 +5,8 @@ import {
 } from "electron";
 import Store from "electron-store";
 
+const isWin = process.platform === "win32"
+
 export default (
   windowName: string,
   options: BrowserWindowConstructorOptions
@@ -80,7 +82,7 @@ export default (
       webSecurity: false,
       ...options.webPreferences,
     },
-    frame: false,
+    frame: isWin,
   };
   win = new BrowserWindow(browserOptions);
 
