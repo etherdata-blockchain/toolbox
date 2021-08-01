@@ -66,6 +66,7 @@ export function RemoteSshProvider(props: Props) {
 
   const updateConfig = React.useCallback(async (content: string) => {
     try {
+      message.info("Found changes, re-parsing...");
       setConfig(YAML.parse(content));
       setWorkers([]);
     } catch (err) {

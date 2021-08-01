@@ -51,7 +51,7 @@ export function WorkerDetail(props: Props) {
 
   const getStatus = React.useCallback(
     (w: WorkerStatus, index: number): JSX.Element => {
-      let error = w.errors.find((e) => e.index === index);
+      let error = w.errors.find((e) => e.progress === index);
       if (error) {
         return <ExclamationCircleOutlined style={{ color: "red" }} />;
       }
@@ -72,7 +72,7 @@ export function WorkerDetail(props: Props) {
   return (
     <div>
       {workers.length === 0 && <Empty description={"No worker"} />}
-      <Row>
+      <Row gutter={[10, 20]}>
         {workers.map((w, i) => (
           <Col key={i} span={24}>
             <Card

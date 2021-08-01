@@ -70,48 +70,51 @@ ipcMain.on("start", async (event, filename) => {
       // Update event will includes the list of workers
       event.reply("update", workers);
       // Create a cancelable promise
-      cancelableJob = cancelable(
-        config.runRemoteCommand({
-          onCommandEnd(index: number, command: string, progress: number) {
-            workers[index].currentProgress = workers[index].currentProgress + 1;
-            event.reply("update", workers);
-          },
-          onCommandOutput(index: number, progress: number, output: string) {
-            Logger.info("Get command progress " + progress);
-            workers[index] = onWorkerCommand(
-              index,
-              progress,
-              output,
-              workers[index]
-            );
-            event.reply("update", workers);
-          },
-          onError(
-            err: any,
+      cancelableJob = config.runRemoteCommand({
+        onCommandEnd(index: number, command: string, progress: number) {
+          workers[index].currentProgress = workers[index].currentProgress + 1;
+          event.reply("update", workers);
+        },
+        onCommandOutput(index: number, progress: number, output: string) {
+          Logger.info("Get command progress " + progress);
+          workers[index] = onWorkerCommand(
             index,
-            progress: number,
-            command: string,
-            errorStopped: boolean
-          ) {
-            Logger.error(index);
-            // Update worker
-            workers[index] = onWorkerError(
-              index,
-              progress,
-              err,
-              errorStopped,
-              workers[index]
-            );
-            event.reply("update", workers);
-          },
-        })
-      );
+            progress,
+            output,
+            workers[index]
+          );
+          event.reply("update", workers);
+        },
+        onError(
+          err: any,
+          index,
+          progress: number,
+          command: string,
+          errorStopped: boolean
+        ) {
+          Logger.error(index);
+          // Update worker
+          workers[index] = onWorkerError(
+            index,
+            progress,
+            err,
+            errorStopped,
+            workers[index]
+          );
+          event.reply("update", workers);
+        },
+      });
+
       cancelableJob
         .then((results) => {
           Logger.info("Action finished");
           event.reply("finish", results);
         })
-        .catch((err) => event.reply("error", err));
+        .catch((err) => event.reply("error", err))
+        .finally(() => {
+          isStarted = false;
+          event.reply("status", isStarted);
+        });
 
       isStarted = true;
       event.reply("status", isStarted);
@@ -122,6 +125,7 @@ ipcMain.on("start", async (event, filename) => {
 });
 
 ipcMain.on("stop", (event) => {
+  Logger.info("Stopped");
   cancelableJob.cancel();
   isStarted = !cancelableJob.isCanceled();
   event.reply("status", isStarted);

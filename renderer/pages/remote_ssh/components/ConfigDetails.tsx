@@ -103,6 +103,9 @@ export default function ConfigDetails(props: Props) {
                   <Descriptions.Item label={"catch_err"}>
                     {s.catch_err?.toString() ?? "false"}
                   </Descriptions.Item>
+                  <Descriptions.Item label={"with_root"}>
+                    {s.with_root?.toString() ?? "false"}
+                  </Descriptions.Item>
                   {s.files && (
                     <Descriptions.Item label={"Files"} span={24}>
                       {s.files.map((f) => `${f.remote} -> ${f.local}`)}

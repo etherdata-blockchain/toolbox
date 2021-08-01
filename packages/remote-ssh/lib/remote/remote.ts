@@ -54,6 +54,10 @@ export class Remote {
     });
   }
 
+  async close() {
+    this.ssh?.dispose();
+  }
+
   async runCommand(
     index: number,
     progress: number,
