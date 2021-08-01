@@ -7,7 +7,6 @@ export interface Config {
   steps: Step[];
   output: boolean;
   start_from?: number;
-  raw?: string;
 }
 
 export interface Logger {

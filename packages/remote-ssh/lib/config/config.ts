@@ -1,8 +1,6 @@
 import fs from "fs";
 import YAML from "yaml";
 import { Config, Logger as ConfigLogger, Login } from "./config-interface";
-
-import cliProgress from "cli-progress";
 import Logger from "../logger";
 import { Remote } from "../remote/remote";
 import { Result } from "../remote";
@@ -39,7 +37,6 @@ export class ConfigParser {
     let config: Config = YAML.parse(file);
     Logger.info("Finish reading configuration file");
     this.config = config;
-    this.config.raw = file;
     return this;
   }
 
@@ -47,7 +44,6 @@ export class ConfigParser {
     let config: Config = YAML.parse(content);
     Logger.info("Finish reading configuration string");
     this.config = config;
-    this.config.raw = content;
     return this;
   }
 

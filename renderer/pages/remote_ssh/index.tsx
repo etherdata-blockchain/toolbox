@@ -5,17 +5,17 @@ import { RemoteSshContext } from "../../models/remoteSSH";
 import { GetStaticProps } from "next";
 import PouchDB from "pouchdb";
 import { database_names } from "../../../configurations/database_names";
-import { Config } from "remote-ssh";
 import Link from "next/link";
+import { SavedConfiguration } from "./interface";
 const { dialog } = require("electron").remote;
 
 const { Title } = Typography;
 
 type Props = {};
 
-const db = new PouchDB<Config>(database_names.remoteSSH);
+const db = new PouchDB<SavedConfiguration>(database_names.remoteSSH);
 export default function Index({}: Props) {
-  const [configs, setConfigs] = React.useState<Config[]>([]);
+  const [configs, setConfigs] = React.useState<SavedConfiguration[]>([]);
   React.useEffect(() => {
     db.allDocs({ include_docs: true }).then((docs) => {
       setConfigs(docs.rows.map((r) => r.doc));
@@ -29,7 +29,10 @@ export default function Index({}: Props) {
 
   const deleteDocument = React.useCallback(async (doc: any) => {
     try {
-      await db.remove(doc);
+      let confirm = await window.confirm("Delete this document?");
+      if (confirm) {
+        await db.remove(doc);
+      }
     } catch (err) {
       await dialog.showMessageBox({
         message: "Cannot delete document. " + err,
@@ -56,10 +59,7 @@ export default function Index({}: Props) {
             //@ts-ignore
             key={c._id}
           >
-            <List.Item.Meta
-              title={c.name}
-              description={`Number of steps ${c.steps.length}`}
-            />
+            <List.Item.Meta title={c.name} description={`${c.filePath}`} />
           </List.Item>
         ))}
       </List>

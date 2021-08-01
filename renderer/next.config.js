@@ -1,7 +1,10 @@
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const withCSS = require("@zeit/next-css");
+const { loader } = "@monaco-editor/react";
 
-module.exports = withCSS({
+const path = require("path");
+
+module.exports = {
   webpack: (config) => {
     Object.assign(config, {
       target: "electron-renderer",
@@ -9,4 +12,4 @@ module.exports = withCSS({
 
     return config;
   },
-});
+};

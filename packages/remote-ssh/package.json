@@ -26,6 +26,7 @@
   "scripts": {
     "start": "ts-node lib/index.ts test.yml",
     "dev": "ts-node-dev --respawn --transpile-only lib/index.ts",
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc"
   }
 }

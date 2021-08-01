@@ -77,7 +77,7 @@ export default (
       nodeIntegration: true,
       enableRemoteModule: true,
       contextIsolation: false,
-      webSecurity: true,
+      webSecurity: false,
       ...options.webPreferences,
     },
     frame: false,

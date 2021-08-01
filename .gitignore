@@ -9,3 +9,4 @@ node_modules
 .DS_Store
 yarn.lock
 configs
+remote-ssh
