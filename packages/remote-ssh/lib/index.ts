@@ -1,3 +1,3 @@
-import ConfigParser, { Config } from "./config";
+import ConfigParser, { Config, WorkerStatus } from "./config";
 
-export { ConfigParser, Config };
+export { ConfigParser, Config, WorkerStatus };

@@ -10,16 +10,82 @@ interface Param {
   concurrency: number;
 }
 
+export interface CommandOutput {
+  /**
+   * Command output
+   */
+  output: string;
+  /**
+   * Remote's index
+   */
+  index: number;
+  /**
+   * Action's index
+   */
+  progress: number;
+}
+
+export interface WorkerStatus {
+  remoteIP: string;
+  currentProgress?: number;
+  isFinished: boolean;
+  outputs: CommandOutput[];
+  errors: CommandOutput[];
+  errorStopped: boolean;
+  results: Result[];
+  /**
+   * Will include both errors and outputs
+   */
+  totalOutputs: CommandOutput[];
+}
+
 interface RunCommandParam {
+  /**
+   * This callback will be called when command starts
+   * @param index Current remote's index
+   * @param command Running command
+   * @param progress Action's index
+   */
   onCommandStart?(index: number, command: string, progress: number): void;
 
-  onError?(err: any, index: number, command: string): void;
+  /**
+   * This callback will be called when error occurs
+   * @param err Error message
+   * @param index Current remote's index
+   * @param progress Current action's index
+   * @param command Which command causes error
+   * @param errorStopped Whether the worker has stopped
+   */
+  onError?(
+    err: any,
+    index: number,
+    progress: number,
+    command: string,
+    errorStopped: boolean
+  ): void;
 
+  /**
+   *  This callback will be called when worker finished all actions
+   * @param index Remote's index
+   * @param results Actions' results
+   */
   onDone?(index: number, results: Result[]): void;
 
+  /**
+   * This callback will be called when command finished running
+   * @param index Remote's index
+   * @param command Which command
+   * @param progress Action's index
+   */
   onCommandEnd?(index: number, command: string, progress: number): void;
 
-  onCommandOutput?(index: number, output: string): void;
+  /**
+   * This callback will be called when command is producing outputs
+   * @param index Remote's index
+   * @param progress Current action's index
+   * @param output Command's outputs
+   */
+  onCommandOutput?(index: number, progress: number, output: string): void;
 }
 
 export class ConfigParser {
@@ -32,6 +98,9 @@ export class ConfigParser {
     this.concurrency = concurrency;
   }
 
+  /**
+   * Read config from file
+   */
   readFile() {
     let file = fs.readFileSync(this.filePath, "utf-8");
     let config: Config = YAML.parse(file);
@@ -40,6 +109,10 @@ export class ConfigParser {
     return this;
   }
 
+  /**
+   * Read config from content
+   * @param content YML String
+   */
   readString(content: string) {
     let config: Config = YAML.parse(content);
     Logger.info("Finish reading configuration string");
@@ -81,13 +154,13 @@ export class ConfigParser {
 
   /**
    * Private helper method to run command
-   * @param remoteIp
-   * @param count
-   * @param onError
-   * @param onCommandOutput
-   * @param onCommandEnd
-   * @param onCommandStart
-   * @param onDone
+   * @param remoteIp Remote IP address
+   * @param count current remote's index
+   * @param onError This callback will be called when encounter error
+   * @param onCommandOutput This callback will be called when command has output
+   * @param onCommandEnd This callback will be called when command ends
+   * @param onCommandStart This callback will be called when command starts
+   * @param onDone This callback will be called when action done
    * @private
    */
   private async runCommandHelper(
@@ -136,6 +209,7 @@ export class ConfigParser {
 
           result = await remote.runCommand(
             count,
+            currentStepNumber,
             {
               command: run,
               cwd,
@@ -146,15 +220,20 @@ export class ConfigParser {
             { onError, onCommandOutput }
           );
         } else if (files !== undefined) {
-          result = await remote.putFiles(count, files, {
+          result = await remote.putFiles(count, currentStepNumber, files, {
             onError,
             onCommandOutput,
           });
         } else if (directory !== undefined) {
-          result = await remote.putDirectory(count, directory, {
-            onCommandOutput,
-            onError,
-          });
+          result = await remote.putDirectory(
+            count,
+            currentStepNumber,
+            directory,
+            {
+              onCommandOutput,
+              onError,
+            }
+          );
         } else {
           Logger.error("Nothing to run");
         }
@@ -172,10 +251,11 @@ export class ConfigParser {
       }
       return results;
     } catch (err) {
-      Logger.error(
-        "Cannot run set up on remote " + remoteIp + " because" + err
-      );
-
+      let reason = "Cannot run set up on remote " + remoteIp + " because" + err;
+      Logger.error(reason);
+      if (onError) {
+        onError(reason, count, -1, "connection", true);
+      }
       return results;
     }
   }

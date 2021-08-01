@@ -1,11 +1,18 @@
 // @flow
 import * as React from "react";
-import { Button, Form, Input, Modal, Row } from "antd";
-import { CaretRightOutlined, PlusOutlined } from "@ant-design/icons";
+import { Button, Form, Input, Modal, Row, Tooltip } from "antd";
+import {
+  BorderOutlined,
+  CaretRightOutlined,
+  CheckCircleOutlined,
+  PlusOutlined,
+} from "@ant-design/icons";
 import { Config } from "remote-ssh";
 import { database_names } from "../../../../configurations/database_names";
 import PouchDB from "pouchdb";
 import { useRouter } from "next/router";
+import { RemoteSshContext } from "../../../models/remoteSSH";
+import { ipcRenderer } from "electron";
 
 type Props = {};
 
@@ -14,17 +21,34 @@ export function RemoteActions(props: Props) {
   const [filePath, setFilePath] = React.useState("");
   const router = useRouter();
   const [form] = Form.useForm();
+  const { savedConfig, isRunning } = React.useContext(RemoteSshContext);
+
+  const run = React.useCallback(() => {
+    if (isRunning) {
+      ipcRenderer.send("stop");
+    } else {
+      ipcRenderer.send("start", savedConfig.filePath);
+    }
+  }, [savedConfig, isRunning]);
 
   return (
     <Row>
-      <Button
-        icon={<PlusOutlined />}
-        shape={"round"}
-        onClick={() => setShowAdd(true)}
-        style={{ marginRight: 10 }}
-      />
+      {router.query.id === undefined && (
+        <Button
+          icon={<PlusOutlined />}
+          shape={"round"}
+          onClick={() => setShowAdd(true)}
+          style={{ marginRight: 10 }}
+        />
+      )}
       {router.query.id && (
-        <Button icon={<CaretRightOutlined />} shape={"round"} />
+        <Tooltip title={isRunning ? "Stop" : "Start"}>
+          <Button
+            icon={isRunning ? <BorderOutlined /> : <CaretRightOutlined />}
+            shape={"round"}
+            onClick={run}
+          />
+        </Tooltip>
       )}
 
       <Modal
@@ -79,6 +103,7 @@ export function RemoteActions(props: Props) {
               }}
             >
               Open File
+              {filePath && <CheckCircleOutlined style={{ color: "green" }} />}
             </Button>
           </Form.Item>
         </Form>

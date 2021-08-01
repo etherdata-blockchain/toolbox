@@ -1,13 +1,11 @@
 // @flow
 import * as React from "react";
 import { Button, Card, Col, List, Row, Typography } from "antd";
-import { RemoteSshContext } from "../../models/remoteSSH";
-import { GetStaticProps } from "next";
+import {dialog} from "@electron/remote"
 import PouchDB from "pouchdb";
 import { database_names } from "../../../configurations/database_names";
 import Link from "next/link";
 import { SavedConfiguration } from "./interface";
-const { dialog } = require("electron").remote;
 
 const { Title } = Typography;
 

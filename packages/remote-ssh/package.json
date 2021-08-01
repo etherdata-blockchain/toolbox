@@ -2,7 +2,7 @@
   "name": "remote-ssh",
   "version": "0.2.3",
   "description": "Remote ssh config file",
-  "main": "lib/index.ts",
+  "main": "dist/index.js",
   "license": "MIT",
   "devDependencies": {
     "jest": "^27.0.6",
