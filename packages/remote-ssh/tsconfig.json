@@ -70,5 +70,10 @@
     "outDir": "dist",
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
-  }
+
+  },
+  "exclude": [
+    "lib/__tests__/**/*",
+    "dist"
+  ]
 }

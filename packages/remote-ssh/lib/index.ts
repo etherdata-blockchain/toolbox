@@ -1,3 +1,3 @@
 import ConfigParser, { Config, WorkerStatus } from "./config";
 
-export { ConfigParser, Config, WorkerStatus };
+export type { ConfigParser, Config, WorkerStatus };
