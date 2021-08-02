@@ -6,7 +6,6 @@ import { RemoteActions } from "../component/remote_ssh/components/actions";
 import "antd/dist/antd.css";
 import "../styles/Global.css";
 import path from "path";
-import { loader } from "@monaco-editor/react";
 
 function ensureFirstBackSlash(str) {
   return str.length > 0 && str.charAt(0) !== "/" ? "/" + str : str;
@@ -16,12 +15,6 @@ function uriFromPath(_path) {
   const pathName = path.resolve(_path).replace(/\\/g, "/");
   return encodeURI("file://" + ensureFirstBackSlash(pathName));
 }
-
-loader.config({
-  paths: {
-    vs: uriFromPath(path.join(__dirname, "/node_modules/monaco-editor/min/vs")),
-  },
-});
 
 function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
