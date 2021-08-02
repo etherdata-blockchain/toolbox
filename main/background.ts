@@ -14,6 +14,8 @@ let isStarted = false;
 // List of workers which will be used for action running
 let workers: WorkerStatus[] = [];
 let cancelableJob: CancelablePromise<any> | undefined;
+// Store system default env
+const systemEnv = process.env;
 
 if (isProd) {
   serve({ directory: "app" });
@@ -42,8 +44,15 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
-ipcMain.on("start", async (event, filename) => {
-  console.log("Start processing actions", filename);
+ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
+  console.log("Start processing actions", filename, "with env", env);
+  // Set environment variables based on the env
+  if (env) {
+    for (const [key, value] of Object.entries(env)) {
+      process.env[key] = value;
+    }
+  }
+
   if (isStarted === true) {
     event.reply(
       "error",
@@ -119,6 +128,12 @@ ipcMain.on("start", async (event, filename) => {
         })
         .catch((err) => event.reply("error", err))
         .finally(() => {
+          /// Clear env
+          if (env) {
+            for (const [key, value] of Object.entries(env)) {
+              delete process.env[key];
+            }
+          }
           isStarted = false;
           event.reply("status", isStarted);
         });

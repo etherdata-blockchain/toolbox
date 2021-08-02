@@ -24,7 +24,7 @@ import {
 type Props = {};
 
 export function WorkerDetail(props: Props) {
-  const { config, workers } = React.useContext(RemoteSshContext);
+  const { workingConfig, workers } = React.useContext(RemoteSshContext);
 
   /**
    * Get connection status.
@@ -88,7 +88,7 @@ export function WorkerDetail(props: Props) {
                   borderRadius: "2px",
                 }}
               >
-                {config?.steps?.map((s, si) => {
+                {workingConfig?.steps?.map((s, si) => {
                   let status = getStatus(w, si);
                   let outputs = w.totalOutputs.filter((o) => o.progress === si);
 
@@ -96,14 +96,21 @@ export function WorkerDetail(props: Props) {
                     <Collapse.Panel
                       extra={status}
                       key={`${si}`}
-                      header={s.run ?? "Put files"}
+                      header={s.name ?? s.run ?? "Put files"}
                       style={{
                         background: "#f7f7f7",
                         border: "0px",
                         borderRadius: "2px",
                       }}
                     >
-                      <div style={{ background: "black" }}>
+                      <div
+                        style={{
+                          background: "black",
+                          maxHeight: 500,
+                          overflowY: "scroll",
+                          scrollbarColor: "white",
+                        }}
+                      >
                         {outputs.map((o, oi) => (
                           <Typography
                             key={`${i}-${si}-${oi}`}

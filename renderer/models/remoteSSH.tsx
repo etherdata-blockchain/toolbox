@@ -17,10 +17,14 @@ interface RemoteSshInterface {
    * Contains real configurations
    */
   config: Config;
+  workingConfig: Config;
   loadSavedConfig(id: string): Promise<SavedConfiguration>;
   updateConfig(content: string): Promise<void>;
+  updateWorkingConfig(config: Config): void;
   isRunning: boolean;
   workers: WorkerStatus[];
+  env: { [key: string]: string };
+  setEnv(env: { [key: string]: string }): void;
 }
 
 type Props = {
@@ -38,6 +42,8 @@ export function RemoteSshProvider(props: Props) {
   const [config, setConfig] = React.useState<Config>();
   const [isRunning, setIsRunning] = React.useState(false);
   const [workers, setWorkers] = React.useState<WorkerStatus[]>([]);
+  const [env, setEnv] = React.useState(undefined);
+  const [workingConfig, updateWorkingConfig] = React.useState<Config>();
 
   React.useEffect(() => {
     ipcRenderer.on("error", async (event, reason) => {
@@ -59,16 +65,17 @@ export function RemoteSshProvider(props: Props) {
 
   const loadSavedConfig = React.useCallback(async (id: string) => {
     let doc = await db.get(id);
+    setConfig(undefined);
+    setSavedConfig(undefined);
     setSavedConfig(doc);
-    setWorkers([]);
     return doc;
   }, []);
 
   const updateConfig = React.useCallback(async (content: string) => {
     try {
+      message.destroy();
       message.info("Found changes, re-parsing...");
       setConfig(YAML.parse(content));
-      setWorkers([]);
     } catch (err) {
       await message.error("Configuration file contains error");
     }
@@ -81,6 +88,10 @@ export function RemoteSshProvider(props: Props) {
     updateConfig,
     isRunning,
     workers,
+    env,
+    setEnv,
+    workingConfig,
+    updateWorkingConfig,
   };
 
   return (
