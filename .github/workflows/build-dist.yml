@@ -32,8 +32,10 @@ jobs:
 
       - name: 🔨 Building app
         run: yarn build
-
-      - name: 📤 Publishing ${{matrix.os}} app
-        run: yarn upload
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+#      - name: 📤 Publishing ${{matrix.os}} app
+#        run: yarn upload
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
