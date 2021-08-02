@@ -3,8 +3,8 @@
   "name": "remote-config",
   "description": "GUI Application for remote-config",
   "repository": "https://github.com/crypyto-panel/remote-config-gui.git",
-  "version": "1.0.0",
-  "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
+  "version": "1.0.2",
+  "author": "sirily11 <sirily1997@gmail.com>",
   "main": "app/background.js",
   "scripts": {
     "dev": "nextron",
