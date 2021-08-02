@@ -1,7 +1,8 @@
 {
-  "private": true,
-  "name": "my-nextron-app",
-  "description": "My application description",
+  "private": false,
+  "name": "remote-config",
+  "description": "GUI Application for remote-config",
+  "repository": "https://github.com/crypyto-panel/remote-config-gui.git",
   "version": "1.0.0",
   "author": "Yoshihide Shiono <shiono.yoshihide@gmail.com>",
   "main": "app/background.js",
@@ -10,6 +11,7 @@
     "build": "nextron build",
     "build:win64": "nextron build --win --x64",
     "postinstall": "electron-builder install-app-deps",
+    "upload": "electron-builder --publish always",
     "test": "jest"
   },
   "dependencies": {
