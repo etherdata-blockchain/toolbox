@@ -1,4 +1,4 @@
-import { app, ipcMain } from "electron";
+import { app, ipcMain, Notification } from "electron";
 import serve from "electron-serve";
 import { createWindow } from "./helpers";
 import { ConfigParser, WorkerStatus } from "remote-ssh";
@@ -6,7 +6,7 @@ import { cancelable, CancelablePromise } from "cancelable-promise";
 import Logger from "remote-ssh/dist/logger";
 import { onWorkerCommand, onWorkerError } from "./helpers/worker-callbacks";
 
-require("@electron/remote/main").initialize()
+require("@electron/remote/main").initialize();
 
 const isProd: boolean = process.env.NODE_ENV === "production";
 // Indicate whether remote ssh is running
@@ -50,6 +50,7 @@ ipcMain.on("start", async (event, filename) => {
       "cannot start this action. Reason: Already has started action."
     );
   } else {
+    new Notification({ title: "Start running workers" }).show();
     let config = new ConfigParser({ filePath: filename, concurrency: 1 });
     try {
       // Read configuration
@@ -110,6 +111,10 @@ ipcMain.on("start", async (event, filename) => {
       cancelableJob
         .then((results) => {
           Logger.info("Action finished");
+          new Notification({
+            title: "Jobs finished!",
+            subtitle: `${workers.length} workers' jobs are finished`,
+          }).show();
           event.reply("finish", results);
         })
         .catch((err) => event.reply("error", err))
@@ -121,6 +126,9 @@ ipcMain.on("start", async (event, filename) => {
       isStarted = true;
       event.reply("status", isStarted);
     } catch (err) {
+      new Notification({
+        title: "Worker has an error. Check Worker tag!",
+      }).show();
       event.reply("error", err);
     }
   }
@@ -128,6 +136,7 @@ ipcMain.on("start", async (event, filename) => {
 
 ipcMain.on("stop", (event) => {
   Logger.info("Stopped");
+  new Notification({ title: "Workers stopped" }).show();
   cancelableJob.cancel();
   isStarted = !cancelableJob.isCanceled();
   event.reply("status", isStarted);
