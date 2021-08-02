@@ -109,7 +109,7 @@ export function WorkerDetail(props: Props) {
                             key={`${i}-${si}-${oi}`}
                             style={{ color: "white" }}
                           >
-                            {o.output}
+                            {o.output.toString()}
                           </Typography>
                         ))}
                       </div>

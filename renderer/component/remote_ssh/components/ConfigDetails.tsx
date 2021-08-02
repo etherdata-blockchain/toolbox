@@ -108,7 +108,8 @@ export default function ConfigDetails(props: Props) {
                   </Descriptions.Item>
                   {s.files && (
                     <Descriptions.Item label={"Files"} span={24}>
-                      {s.files.map((f) => `${f.remote} -> ${f.local}`)}
+                      {s.files?.length &&
+                        s.files.map((f) => `${f.local} -> ${f.remote}`)}
                     </Descriptions.Item>
                   )}
                 </Descriptions>
