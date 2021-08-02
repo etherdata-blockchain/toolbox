@@ -21,8 +21,17 @@ jobs:
       - name: 🔨 Installing dependencies
         run: yarn install
 
+      - name: Building remote-ssh package
+        run: tsc
+        working-directory: packages/remote-ssh
+
+      - name: Installing remote-ssh package
+        run: yarn add file:./packages/remote-ssh
+
       - name: 🔨 Building app
         run: yarn build
 
       - name: 📤 Publishing ${{matrix.os}} app
         run: yarn upload
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
