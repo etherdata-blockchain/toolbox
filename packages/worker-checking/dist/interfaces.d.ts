@@ -38,6 +38,8 @@ export interface Callbacks {
     /**
      * This function will be called when plugin finish one remote's checking
      * @param status Worker's status
+     * @param index Current worker's index
+     * @param pluginIndex Index of plugin
      */
-    onDone?(status: WorkerStatus): void;
+    onDone?(status: WorkerStatus, index: number, pluginIndex: number): void;
 }

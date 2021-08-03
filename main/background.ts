@@ -5,6 +5,13 @@ import { ConfigParser, WorkerStatus } from "remote-ssh";
 import { cancelable, CancelablePromise } from "cancelable-promise";
 import Logger from "remote-ssh/dist/logger";
 import { onWorkerCommand, onWorkerError } from "./helpers/worker-callbacks";
+import {
+  Web3PluginAcceptType,
+  Worker,
+  WorkerChecker,
+  WorkerCondition,
+} from "worker-checking";
+import { getPluginsByName } from "./helpers/worker-checking-utils";
 
 require("@electron/remote/main").initialize();
 
@@ -149,6 +156,9 @@ ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
   }
 });
 
+/**
+ * Stop remote config
+ */
 ipcMain.on("stop", (event) => {
   Logger.info("Stopped");
   new Notification({ title: "Workers stopped" }).show();
@@ -156,3 +166,28 @@ ipcMain.on("stop", (event) => {
   isStarted = !cancelableRemoteJob.isCanceled();
   event.reply("status", isStarted);
 });
+
+/**
+ * Start worker checking
+ */
+ipcMain.on(
+  "start-worker-checking",
+  async (
+    event,
+    workers: Worker[],
+    pluginNames: string[],
+    condition: WorkerCondition<Web3PluginAcceptType>,
+    concurrency: number
+  ) => {
+    let plugins = getPluginsByName(pluginNames);
+    let checker = new WorkerChecker(plugins, concurrency);
+    await checker.doChecking(workers, condition, {
+      onDone: (status, remoteIndex, pluginIndex) => {
+        // Worker status, remote worker index, plugin index, isDone
+        event.reply("checker-status", status, remoteIndex, pluginIndex, false);
+      },
+    });
+
+    event.reply("checker", undefined, workers.length, undefined, true);
+  }
+);

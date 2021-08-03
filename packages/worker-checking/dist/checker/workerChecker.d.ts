@@ -14,6 +14,7 @@ export declare class WorkerChecker {
     constructor(plugins: BasePlugin[], concurrency: number);
     /**
      * Checking helper function
+     * @param index
      * @param worker
      * @param condition
      * @param callbacks
