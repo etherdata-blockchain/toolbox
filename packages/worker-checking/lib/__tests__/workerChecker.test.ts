@@ -33,10 +33,11 @@ describe("Simple Worker Checker Tests", () => {
   test("Simple Test", async () => {
     let checker = new WorkerChecker([new Web3Plugin()], 1);
     let onDoneFunc = jest.fn();
-    await checker.doChecking([worker], condition, { onDone: onDoneFunc });
+    let results = await checker.doChecking([worker], condition, { onDone: onDoneFunc });
     expect(onDoneFunc.mock.calls.length).toBe(1);
     expect(onDoneFunc.mock.calls[0][0].success).toBe(true);
     expect(onDoneFunc.mock.calls[0][1]).toBe(0);
     expect(onDoneFunc.mock.calls[0][2]).toBe(0);
+    expect(results.length).toBe(1)
   });
 });

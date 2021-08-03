@@ -62,6 +62,10 @@ export function WorkerSelections(props: Props) {
 
         <Col span={12}>
           <Input
+            disabled={
+              condition.workingType === "isMining" ||
+              condition.workingType === "isSyncing"
+            }
             placeholder={"By Value"}
             value={condition.value}
             onChange={(e) => {

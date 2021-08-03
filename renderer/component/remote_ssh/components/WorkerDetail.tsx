@@ -111,14 +111,19 @@ export function WorkerDetail(props: Props) {
                           scrollbarColor: "white",
                         }}
                       >
-                        {outputs.map((o, oi) => (
-                          <Typography
-                            key={`${i}-${si}-${oi}`}
-                            style={{ color: "white" }}
-                          >
-                            {o.output.toString()}
-                          </Typography>
-                        ))}
+                        {outputs.map((o, oi) =>
+                          o.output
+                            .toString()
+                            .split("\n")
+                            .map((line, lineNum) => (
+                              <Typography
+                                key={`${i}-${si}-${oi}-${lineNum}`}
+                                style={{ color: "white" }}
+                              >
+                                {line}
+                              </Typography>
+                            ))
+                        )}
                       </div>
                     </Collapse.Panel>
                   );

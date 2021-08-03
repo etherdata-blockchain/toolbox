@@ -88,7 +88,7 @@ export class WorkerChecker {
         });
 
         let results = await CancelablePromise.all(promises);
-        returnResults.concat(results);
+        returnResults = returnResults.concat(results);
       }
 
       resolve(returnResults);

@@ -12,7 +12,7 @@ export function RemoteList(props: Props) {
   return (
     <List
       style={{ flex: 1, maxHeight: "100%", overflowY: "scroll" }}
-      dataSource={workers}
+      dataSource={workers.filter((w) => !w.success)}
       renderItem={(item) => (
         <List.Item>
           <List.Item.Meta

@@ -20,6 +20,8 @@ export function WorkerActions(props: Props) {
     start,
     savedRemotes,
     concurrency,
+    condition,
+    remotes,
   } = React.useContext(WorkerCheckerContext);
 
   const onCancelRemoteDialog = React.useCallback(() => {
@@ -39,7 +41,7 @@ export function WorkerActions(props: Props) {
     } else {
       start();
     }
-  }, [isStarted]);
+  }, [isStarted, condition, remotes]);
 
   return (
     <div style={{ overflowY: "hidden" }}>
@@ -81,7 +83,7 @@ export function WorkerActions(props: Props) {
               "Separate by comma.Port number is optional . For example, 192.168.1.1:8547,192.168.1.2:8545"
             }
           >
-            <Input.TextArea rows={20} name={"ipAddresses"} />
+            <Input.TextArea rows={10} name={"ipAddresses"} />
           </Form.Item>
         </Form>
       </Modal>

@@ -194,7 +194,6 @@ ipcMain.on(
     let workers: Worker[] = remotes.map((r) => {
       return { remote: r };
     });
-    new Notification({ title: "Starting worker checker" }).show();
 
     // Initialize a list of worker status
     let foundWorkers: WorkerCheckingStatus[] = [];
@@ -217,7 +216,7 @@ ipcMain.on(
       },
     });
 
-    cancelableRemoteJob
+    cancelableWorkerCheckingJob
       .then(() => {
         console.log("Finished");
         event.reply("checker-status", foundWorkers, workers.length, true);
@@ -232,7 +231,10 @@ ipcMain.on(
       .finally(() => {
         isWorkerCheckerStarted = false;
         event.reply("checker-start-status", isWorkerCheckerStarted);
-        new Notification({ title: "Finished worker checker" });
+        new Notification({
+          title: "Finished",
+          subtitle: "Worker Checker Finished",
+        }).show();
       });
   }
 );

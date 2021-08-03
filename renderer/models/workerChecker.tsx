@@ -114,6 +114,7 @@ export function WorkerCheckerProvider({ children }: Props) {
     setRemotes(s.split(","));
     localStorage.setItem("worker-checker-concurrency", c);
     setConcurrency(parseInt(c));
+    setSavedRemotes(s);
   }, []);
 
   const value: WorkerChecker = {
