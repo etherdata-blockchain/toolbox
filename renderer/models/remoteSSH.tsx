@@ -24,7 +24,7 @@ interface RemoteSshInterface {
   isRunning: boolean;
   workers: WorkerStatus[];
   env: { [key: string]: string };
-  setEnv(env: { [key: string]: string }): void;
+  updateEnv(env: { [key: string]: string }): void;
 }
 
 type Props = {
@@ -63,11 +63,23 @@ export function RemoteSshProvider(props: Props) {
     });
   }, []);
 
+  const updateEnv = React.useCallback(
+    async (env: { [key: string]: string }) => {
+      //@ts-ignore
+      let doc = await db.get(savedConfig._id);
+      setEnv(env);
+      doc.env = env;
+      await db.put(doc);
+    },
+    [env, savedConfig]
+  );
+
   const loadSavedConfig = React.useCallback(async (id: string) => {
     let doc = await db.get(id);
     setConfig(undefined);
     setSavedConfig(undefined);
     setSavedConfig(doc);
+    setEnv(doc.env);
     return doc;
   }, []);
 
@@ -89,7 +101,7 @@ export function RemoteSshProvider(props: Props) {
     isRunning,
     workers,
     env,
-    setEnv,
+    updateEnv,
     workingConfig,
     updateWorkingConfig,
   };

@@ -23,6 +23,7 @@ import PouchDB from "pouchdb";
 import { useRouter } from "next/router";
 import { RemoteSshContext } from "../../../models/remoteSSH";
 import electron, { ipcRenderer } from "electron";
+import { useForm } from "antd/lib/form/Form";
 
 type Props = {};
 
@@ -32,9 +33,30 @@ export function RemoteActions(props: Props) {
   const [filePath, setFilePath] = React.useState("");
   const router = useRouter();
   const [form] = Form.useForm();
-  const { savedConfig, isRunning, env, setEnv, updateWorkingConfig, config } =
-    React.useContext(RemoteSshContext);
+  const [settingsForm] = Form.useForm();
+  const {
+    savedConfig,
+    isRunning,
+    env,
+    updateEnv,
+    updateWorkingConfig,
+    config,
+  } = React.useContext(RemoteSshContext);
   const remote = electron.remote || false;
+
+  const initEnvs = env
+    ? Object.entries(env).map(([key, value]) => {
+        return {
+          key,
+          value,
+        };
+      })
+    : [];
+
+  React.useEffect(() => {
+    console.log("Update");
+    settingsForm.setFieldsValue({ env: initEnvs });
+  }, [savedConfig]);
 
   /// Run the action based on the config
   /// Will also update working config
@@ -49,15 +71,6 @@ export function RemoteActions(props: Props) {
     }
   }, [savedConfig, isRunning, env, config]);
 
-  const initEnvs = env
-    ? Object.entries(env).map(([key, value]) => {
-        return {
-          key,
-          value,
-        };
-      })
-    : [];
-
   const pickFile = React.useCallback(async () => {
     if (remote) {
       let result = await remote.dialog.showOpenDialog({
@@ -69,7 +82,7 @@ export function RemoteActions(props: Props) {
     }
   }, [remote]);
 
-  const onEnvChanged = React.useCallback((values: any[]) => {
+  const onEnvChanged = React.useCallback(async (values: any[]) => {
     let filteredValues = values
       .map((v) => {
         return { key: v.key, value: v.value };
@@ -79,7 +92,7 @@ export function RemoteActions(props: Props) {
     for (let v of filteredValues) {
       env[v.key] = v.value;
     }
-    setEnv(env);
+    await updateEnv(env);
   }, []);
 
   return (
@@ -120,6 +133,7 @@ export function RemoteActions(props: Props) {
         visible={showSetting}
       >
         <Form
+          form={settingsForm}
           name={"env"}
           initialValues={initEnvs}
           onValuesChange={(_, values) => {
