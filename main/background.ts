@@ -12,14 +12,22 @@ import {
   WorkerCondition,
 } from "worker-checking";
 import { getPluginsByName } from "./helpers/worker-checking-utils";
+import { WorkerStatus as WorkerCheckingStatus } from "worker-checking";
 
 require("@electron/remote/main").initialize();
 
 const isProd: boolean = process.env.NODE_ENV === "production";
+
 // Indicate whether remote ssh is running
-let isStarted = false;
+let isRemoteSSHStarted = false;
+
+// Indicate whether worker checker is running
+let isWorkerCheckerStarted = false;
+
 // List of workers which will be used for action running
 let workers: WorkerStatus[] = [];
+
+// Cancelable promises, used to stop jobs
 let cancelableRemoteJob: CancelablePromise<any> | undefined;
 let cancelableWorkerCheckingJob: CancelablePromise<any> | undefined;
 
@@ -52,7 +60,6 @@ app.on("window-all-closed", () => {
 
 /// Start running remote-config
 ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
-  console.log("Start processing actions", filename, "with env", env);
   // Set environment variables based on the env
   if (env) {
     for (const [key, value] of Object.entries(env)) {
@@ -60,17 +67,20 @@ ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
     }
   }
 
-  if (isStarted === true) {
+  if (isRemoteSSHStarted === true) {
     event.reply(
       "error",
       "cannot start this action. Reason: Already has started action."
     );
   } else {
     new Notification({ title: "Start running workers" }).show();
+
+    // Get configuration from file
     let config = new ConfigParser({ filePath: filename, concurrency: 1 });
     try {
       // Read configuration
       config.readFile();
+
       // Create a list of workers
       workers = config.config.remote.map((r) => {
         return {
@@ -85,9 +95,11 @@ ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
           isFinished: false,
         };
       });
+
       // Send the list of workers back to the render
       // Update event will includes the list of workers
       event.reply("update", workers);
+
       // Create a cancelable promise
       cancelableRemoteJob = config.runRemoteCommand({
         onCommandEnd(index: number, command: string, progress: number) {
@@ -141,12 +153,12 @@ ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
               delete process.env[key];
             }
           }
-          isStarted = false;
-          event.reply("status", isStarted);
+          isRemoteSSHStarted = false;
+          event.reply("status", isRemoteSSHStarted);
         });
 
-      isStarted = true;
-      event.reply("status", isStarted);
+      isRemoteSSHStarted = true;
+      event.reply("status", isRemoteSSHStarted);
     } catch (err) {
       new Notification({
         title: "Worker has an error. Check Worker tag!",
@@ -163,8 +175,8 @@ ipcMain.on("stop", (event) => {
   Logger.info("Stopped");
   new Notification({ title: "Workers stopped" }).show();
   cancelableRemoteJob.cancel();
-  isStarted = !cancelableRemoteJob.isCanceled();
-  event.reply("status", isStarted);
+  isRemoteSSHStarted = !cancelableRemoteJob.isCanceled();
+  event.reply("status", isRemoteSSHStarted);
 });
 
 /**
@@ -174,20 +186,59 @@ ipcMain.on(
   "start-worker-checking",
   async (
     event,
-    workers: Worker[],
+    remotes: string[],
     pluginNames: string[],
     condition: WorkerCondition<Web3PluginAcceptType>,
     concurrency: number
   ) => {
+    let workers: Worker[] = remotes.map((r) => {
+      return { remote: r };
+    });
+    new Notification({ title: "Starting worker checker" }).show();
+
+    // Initialize a list of worker status
+    let foundWorkers: WorkerCheckingStatus[] = [];
+
+    // initialize a variable to track current progress
+    let progress = 0;
+
+    isWorkerCheckerStarted = true;
+    event.reply("checker-start-status", isWorkerCheckerStarted);
+
     let plugins = getPluginsByName(pluginNames);
     let checker = new WorkerChecker(plugins, concurrency);
-    await checker.doChecking(workers, condition, {
+    cancelableWorkerCheckingJob = checker.doChecking(workers, condition, {
       onDone: (status, remoteIndex, pluginIndex) => {
-        // Worker status, remote worker index, plugin index, isDone
-        event.reply("checker-status", status, remoteIndex, pluginIndex, false);
+        foundWorkers.push(status);
+        progress = remoteIndex;
+
+        // send found workers, remote index, and is finished back to renderer
+        event.reply("checker-status", foundWorkers, progress, false);
       },
     });
 
-    event.reply("checker", undefined, workers.length, undefined, true);
+    cancelableRemoteJob
+      .then(() => {
+        console.log("Finished");
+        event.reply("checker-status", foundWorkers, workers.length, true);
+      })
+      .catch((err) => {
+        event.reply("checker-status", foundWorkers, progress, true);
+        new Notification({
+          title: "Worker Checker error",
+          subtitle: err.toString(),
+        }).show();
+      })
+      .finally(() => {
+        isWorkerCheckerStarted = false;
+        event.reply("checker-start-status", isWorkerCheckerStarted);
+        new Notification({ title: "Finished worker checker" });
+      });
   }
 );
+
+ipcMain.on("stop-worker-checking", (event) => {
+  cancelableWorkerCheckingJob?.cancel();
+  isWorkerCheckerStarted = false;
+  event.reply("checker-start-status", isWorkerCheckerStarted);
+});

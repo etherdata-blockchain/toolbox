@@ -1,33 +1,74 @@
 // @flow
 import * as React from "react";
 import { Col, Divider, Input, Row, Select, Typography } from "antd";
+import { Web3PluginAcceptType } from "worker-checking";
+import { Comparison } from "worker-checking/dist/interfaces";
+import { WorkerCheckerContext } from "../../models/workerChecker";
 
 type Props = {};
 
 export function WorkerSelections(props: Props) {
+  const web3PluginTypes: Web3PluginAcceptType[] = [
+    "coinbase",
+    "blockNumber",
+    "isMining",
+    "isSyncing",
+    "nodeVersion",
+    "peerCount",
+    "chainID",
+  ];
+
+  const comparison: Comparison[] = ["greater", "less", "equal"];
+  const { condition, setCondition } = React.useContext(WorkerCheckerContext);
+
   return (
     <div>
       <Row gutter={[10, 10]}>
         <Col span={6}>
-          <Select placeholder={"Filter by"} style={{ width: "100%" }}>
-            <Select.Option value={"version"}>Version</Select.Option>
-            <Select.Option value={"peerCount"}>Peers Count</Select.Option>
-            <Select.Option value={"coinbase"}>coinbase</Select.Option>
-            <Select.Option value={"isMining"}>Is Mining</Select.Option>
-            <Select.Option value={"isSyncing"}>Is Syncing</Select.Option>
+          <Select
+            value={condition.workingType}
+            placeholder={"Filter by"}
+            style={{ width: "100%" }}
+            onSelect={(v) => {
+              condition.workingType = v;
+              setCondition(JSON.parse(JSON.stringify(condition)));
+            }}
+          >
+            {web3PluginTypes.map((v) => (
+              <Select.Option value={v} key={v}>
+                {v}
+              </Select.Option>
+            ))}
           </Select>
         </Col>
 
         <Col span={6}>
-          <Select placeholder={"Condition"} style={{ width: "100%" }}>
-            <Select.Option value={"greater"}>Greater than</Select.Option>
-            <Select.Option value={"equal"}>Equal</Select.Option>
-            <Select.Option value={"less"}>Less than</Select.Option>
+          <Select
+            value={condition.comparison}
+            placeholder={"Comparison"}
+            style={{ width: "100%" }}
+            onSelect={(v: Comparison) => {
+              condition.comparison = v;
+              setCondition(JSON.parse(JSON.stringify(condition)));
+            }}
+          >
+            {comparison.map((v) => (
+              <Select.Option value={v} key={v}>
+                {v}
+              </Select.Option>
+            ))}
           </Select>
         </Col>
 
         <Col span={12}>
-          <Input placeholder={"By Value"} />
+          <Input
+            placeholder={"By Value"}
+            value={condition.value}
+            onChange={(e) => {
+              condition.value = e.target.value;
+              setCondition(JSON.parse(JSON.stringify(condition)));
+            }}
+          />
         </Col>
       </Row>
     </div>

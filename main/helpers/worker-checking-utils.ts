@@ -1,5 +1,6 @@
-import { BasePlugin } from "worker-checking/dist/plugin";
+import { BasePlugin, Web3Plugin } from "worker-checking/dist/plugin";
 
 export function getPluginsByName(pluginNames: string[]): BasePlugin[] {
-  return [];
+  //TODO: Add real mapping function
+  return [new Web3Plugin()];
 }

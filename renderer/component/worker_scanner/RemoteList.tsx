@@ -1,72 +1,24 @@
 // @flow
 import * as React from "react";
 import { List, Typography } from "antd";
-import { WorkerScannerStatus } from "../../models/workerScanner";
 import { DesktopOutlined } from "@ant-design/icons";
+import { WorkerCheckerContext } from "../../models/workerChecker";
 
 type Props = {};
 
-export const list: WorkerScannerStatus[] = [
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-  {
-    remote: "192.168.1.1",
-    found: true,
-    message: "false",
-    title: "Is Mining",
-  },
-];
-
 export function RemoteList(props: Props) {
+  const { workers } = React.useContext(WorkerCheckerContext);
+
   return (
     <List
       style={{ flex: 1, maxHeight: "100%", overflowY: "scroll" }}
-      dataSource={list}
+      dataSource={workers}
       renderItem={(item) => (
         <List.Item>
           <List.Item.Meta
-            avatar={<DesktopOutlined style={{ fontSize: 40 }} />}
+            avatar={
+              <DesktopOutlined style={{ fontSize: 40, color: "#42a4f5" }} />
+            }
             title={item.remote}
             description={
               <Typography>

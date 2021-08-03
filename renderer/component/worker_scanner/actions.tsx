@@ -1,34 +1,65 @@
 // @flow
 import * as React from "react";
 import { Button, Form, Input, Modal, Tooltip } from "antd";
-import { DesktopOutlined, RadarChartOutlined } from "@ant-design/icons";
-import { useForm } from "antd/es/form/Form";
+import {
+  BorderOutlined,
+  DesktopOutlined,
+  RadarChartOutlined,
+} from "@ant-design/icons";
+import { WorkerCheckerContext } from "../../models/workerChecker";
 
 type Props = {};
 
 export function WorkerActions(props: Props) {
   const [showSetRemote, setShowRemote] = React.useState(false);
-  const [remoteForm] = useForm();
+  const [remoteForm] = Form.useForm();
+  const {
+    updateSavedRemotes,
+    isStarted,
+    stop,
+    start,
+    savedRemotes,
+    concurrency,
+  } = React.useContext(WorkerCheckerContext);
 
   const onCancelRemoteDialog = React.useCallback(() => {
     setShowRemote(false);
   }, []);
 
   const onOkRemoteDialog = React.useCallback(() => {
+    let data = remoteForm.getFieldValue("addresses");
+    let concurrency = remoteForm.getFieldValue("concurrency");
+    updateSavedRemotes(data, concurrency);
     setShowRemote(false);
   }, []);
 
+  const onScanBtnClick = React.useCallback(() => {
+    if (isStarted) {
+      stop();
+    } else {
+      start();
+    }
+  }, [isStarted]);
+
   return (
-    <div>
+    <div style={{ overflowY: "hidden" }}>
       <Tooltip title={"Remotes"}>
         <Button shape={"round"} style={{ marginRight: 10 }}>
-          <DesktopOutlined onClick={() => setShowRemote(true)} />
+          <DesktopOutlined
+            onClick={() => {
+              remoteForm.setFieldsValue({
+                addresses: savedRemotes,
+                concurrency: concurrency,
+              });
+              setShowRemote(true);
+            }}
+          />
         </Button>
       </Tooltip>
 
-      <Tooltip title={"Scan"}>
-        <Button shape={"round"}>
-          <RadarChartOutlined />
+      <Tooltip title={isStarted ? "Stop" : "Scan"}>
+        <Button shape={"round"} onClick={onScanBtnClick}>
+          {isStarted ? <BorderOutlined /> : <RadarChartOutlined />}
         </Button>
       </Tooltip>
 
@@ -40,9 +71,15 @@ export function WorkerActions(props: Props) {
         width={"80%"}
       >
         <Form form={remoteForm}>
+          <Form.Item name={"concurrency"} label={"Concurrency"}>
+            <Input type={"number"} />
+          </Form.Item>
           <Form.Item
+            name={"addresses"}
             label={"Remote IP Address"}
-            extra={"Separate by comma. For example, 192.168.1.1,192.168.1.2"}
+            extra={
+              "Separate by comma.Port number is optional . For example, 192.168.1.1:8547,192.168.1.2:8545"
+            }
           >
             <Input.TextArea rows={20} name={"ipAddresses"} />
           </Form.Item>

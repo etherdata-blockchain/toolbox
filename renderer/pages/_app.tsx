@@ -11,6 +11,7 @@ import "antd/dist/antd.css";
 import "../styles/Global.css";
 import path from "path";
 import { WorkerActions } from "../component/worker_scanner/actions";
+import { WorkerCheckerProvider } from "../models/workerChecker";
 
 function ensureFirstBackSlash(str) {
   return str.length > 0 && str.charAt(0) !== "/" ? "/" + str : str;
@@ -37,19 +38,21 @@ function MyApp(props: AppProps) {
       actions: <RemoteActions />,
     },
     {
-      title: "Worker Scanner",
+      title: "Worker Checker",
       icon: <SecurityScanOutlined />,
-      link: "/worker_scanner",
+      link: "/worker_checker",
       actions: <WorkerActions />,
     },
   ];
 
   return (
-    <RemoteSshProvider>
-      <PageLayout menus={menus}>
-        <Component {...pageProps} />
-      </PageLayout>
-    </RemoteSshProvider>
+    <WorkerCheckerProvider>
+      <RemoteSshProvider>
+        <PageLayout menus={menus}>
+          <Component {...pageProps} />
+        </PageLayout>
+      </RemoteSshProvider>
+    </WorkerCheckerProvider>
   );
 }
 
