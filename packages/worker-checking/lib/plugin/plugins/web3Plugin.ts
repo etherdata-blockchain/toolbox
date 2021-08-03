@@ -1,7 +1,6 @@
 import {BasePlugin} from "../base";
 import {WorkerCondition, WorkerStatus, Worker} from "../../interfaces";
 import Web3 from "web3"
-import {Admin} from 'web3-eth-admin';
 import Logger from "../../logger";
 
 export type Web3PluginAcceptType =
