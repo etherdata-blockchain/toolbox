@@ -8,8 +8,7 @@ let worker: Worker = {
 }
 
 let condition: WorkerCondition<Web3PluginAcceptType> = {
-    comparison: "equal", value: "3101", workingType: "chainID"
-
+    comparison: "less", value: "2", workingType: "peerCount"
 }
 
 let checker = new WorkerChecker([new Web3Plugin()], 1)

@@ -21,4 +21,29 @@ export abstract class BasePlugin{
             success: false,
         }
     }
+
+    protected equal(foundValue: any, expectValue: any, errorMessage: string): [boolean, string | undefined]{
+        if(foundValue === expectValue){
+            return [true, undefined]
+        } else{
+            return  [false, `${errorMessage}, found ${foundValue}, expect equals to ${expectValue}`]
+        }
+    }
+
+    protected greaterThan(foundValue: any, expectValue: any, errorMessage: string): [boolean, string | undefined]{
+        if(foundValue > expectValue){
+            return [true, undefined]
+        } else{
+            return  [false, `${errorMessage}, found ${foundValue}, expect greater than ${expectValue}`]
+        }
+    }
+
+    protected lessThan(foundValue: any, expectValue: any, errorMessage: string): [boolean, string | undefined]{
+        if(foundValue < expectValue){
+            return [true, undefined]
+        } else{
+            return  [false, `${errorMessage}, found ${foundValue}, expect less than ${expectValue}`]
+        }
+    }
+
 }

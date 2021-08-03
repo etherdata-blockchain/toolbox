@@ -4,13 +4,20 @@ import Web3 from "web3"
 import {Admin} from 'web3-eth-admin';
 import Logger from "../../logger";
 
-export type Web3PluginAcceptType = "isMining" | "isSyncing" | "coinbase" | "nodeVersion" | "chainID"
+export type Web3PluginAcceptType =
+    "isMining"
+    | "isSyncing"
+    | "coinbase"
+    | "nodeVersion"
+    | "chainID"
+    | "blockNumber"
+    | "peerCount"
 
-export class Web3Plugin extends BasePlugin{
+export class Web3Plugin extends BasePlugin {
 
     pluginName: string = "Web3 Plugin"
 
-    private getWeb3URL(ip: string): string{
+    private getWeb3URL(ip: string): string {
         return `http://${ip}`
     }
 
@@ -19,11 +26,11 @@ export class Web3Plugin extends BasePlugin{
      * @param worker
      * @private
      */
-    private async checkIsMining(worker: Worker): Promise<[boolean, string | undefined]>{
-        try{
+    private async checkIsMining(worker: Worker): Promise<[boolean, string | undefined]> {
+        try {
             let web3 = new Web3(this.getWeb3URL(worker.remote))
             return [await web3.eth.isMining(), undefined]
-        } catch (err){
+        } catch (err) {
             Logger.error(`${this.pluginName}: ${worker.remote} => ${err}`)
             return [false, err.toString()]
         }
@@ -34,11 +41,11 @@ export class Web3Plugin extends BasePlugin{
      * @param worker
      * @private
      */
-    private async checkIsSyncing(worker: Worker): Promise<[boolean, string | undefined]>{
-        try{
+    private async checkIsSyncing(worker: Worker): Promise<[boolean, string | undefined]> {
+        try {
             let web3 = new Web3(this.getWeb3URL(worker.remote))
             return [await web3.eth.isSyncing() === false, undefined]
-        } catch (err){
+        } catch (err) {
             Logger.error(`${this.pluginName}: ${worker.remote} => ${err}`)
             return [false, err.toString()]
         }
@@ -50,24 +57,20 @@ export class Web3Plugin extends BasePlugin{
      * @param condition
      * @private
      */
-    private async checkNodeVersion(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<[boolean, string | undefined]>{
-        const { comparison, value } = condition
-        if(comparison === "equal"){
+    private async checkNodeVersion(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<[boolean, string | undefined]> {
+        const {comparison, value} = condition
+        if (comparison === "equal") {
             try {
                 let admin = new Web3(this.getWeb3URL(worker.remote))
                 let version = await admin.eth.getNodeInfo()
-                if(version === value){
-                    return [true, undefined]
-                } else{
-                    return [false, `Version is not equal, found ${version} expect ${value}`]
-                }
+                return this.equal(version, value, "Node Version is not equal")
 
-            } catch (err){
+            } catch (err) {
                 Logger.error(`${this.pluginName}: ${worker.remote} -> ${err}`)
                 return [false, err.toString()]
             }
 
-        } else{
+        } else {
             return [false, "Can only do equal checking on node version"]
         }
     }
@@ -78,33 +81,81 @@ export class Web3Plugin extends BasePlugin{
      * @param condition
      * @private
      */
-    private async checkChainID(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<[boolean, string | undefined]>{
-        const { comparison, value } = condition
-        if(comparison === "equal"){
+    private async checkChainID(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<[boolean, string | undefined]> {
+        const {comparison, value} = condition
+        if (comparison === "equal") {
             try {
                 let admin = new Web3(this.getWeb3URL(worker.remote))
                 let chain = await admin.eth.getChainId()
-                if(`${chain}` === value){
-                    return [true, undefined]
-                } else {
-                    return [false, `Chain id is not equal, found ${chain} expect ${value}`]
-                }
+                return this.equal(`${chain}`, value, "Chain ID is not equal")
 
-            } catch (err){
+            } catch (err) {
                 Logger.error(`${this.pluginName}: ${worker.remote} -> ${err}`)
                 return [false, err.toString()]
             }
 
-        } else{
+        } else {
             return [false, "Can only do equal checking on chainID"]
         }
     }
 
-    async doChecking(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<WorkerStatus> {
-        const { remote } = worker
-        const { workingType, comparison } = condition
+    /**
+     * Check block number
+     * @param worker
+     * @param condition
+     * @private
+     */
+    private async checkBlockNumber(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<[boolean, string | undefined]> {
+        const {comparison, value} = condition
+        try {
+            let web3 = new Web3(this.getWeb3URL(worker.remote))
+            let blockNumber = await web3.eth.getBlockNumber()
+            if (comparison === "greater") {
+                return this.greaterThan(blockNumber, parseInt(value), "Block Number checking failed")
+            } else if (comparison === "less") {
+                return this.lessThan(blockNumber, parseInt(value), "Block Number checking failed")
+            } else if (comparison === "equal") {
+                return this.equal(blockNumber, parseInt(value), "Block Number checking failed")
+            } else {
+                return [false, "No such method"]
+            }
+        } catch (err) {
+            Logger.error(`${this.pluginName}: ${worker.remote} -> ${err}`)
+            return [false, err.toString()]
+        }
+    }
 
-        switch (workingType){
+    /**
+     * Check peer count
+     * @param worker
+     * @param condition
+     * @private
+     */
+    private async checkPeerCount(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<[boolean, string | undefined]> {
+        const {comparison, value} = condition
+        try {
+            let web3 = new Web3(this.getWeb3URL(worker.remote))
+            let peerCount = await web3.eth.net.getPeerCount()
+            if (comparison === "greater") {
+                return this.greaterThan(peerCount, parseInt(value), "Peer Count checking failed")
+            } else if (comparison === "less") {
+                return this.lessThan(peerCount, parseInt(value), "Peer Count checking failed")
+            } else if (comparison === "equal") {
+                return this.equal(peerCount, parseInt(value), "Peer Count checking failed")
+            } else {
+                return [false, "No such method"]
+            }
+        } catch (err) {
+            Logger.error(`${this.pluginName}: ${worker.remote} -> ${err}`)
+            return [false, err.toString()]
+        }
+    }
+
+    async doChecking(worker: Worker, condition: WorkerCondition<Web3PluginAcceptType>): Promise<WorkerStatus> {
+        const {remote} = worker
+        const {workingType, comparison} = condition
+
+        switch (workingType) {
             case "isMining":
                 let [isMining, miningErr] = await this.checkIsMining(worker)
                 return {
@@ -138,6 +189,23 @@ export class Web3Plugin extends BasePlugin{
                     title: "ChainID",
                     message: chainIDErr ?? `${isChainIDEqual}`,
                     success: isChainIDEqual,
+                }
+
+            case "blockNumber":
+                let [blockNumberResult, blockNumberErr] = await this.checkBlockNumber(worker, condition)
+                return {
+                    remote,
+                    title: "Block Number",
+                    message: blockNumberErr ?? `${blockNumberResult}`,
+                    success: blockNumberResult,
+                }
+            case "peerCount":
+                let [peerCountResult, peerCountErr] = await this.checkPeerCount(worker, condition)
+                return {
+                    remote,
+                    title: "Peer Count",
+                    message: peerCountErr ?? `${peerCountResult}`,
+                    success: peerCountResult,
                 }
         }
         return this.getDefaultWorkerStatus(worker)

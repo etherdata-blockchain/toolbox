@@ -22,7 +22,7 @@ export interface Worker{
     remote: string;
 }
 
-export type Comparison = "greater" | "smaller" | "equal"
+export type Comparison = "greater" | "less" | "equal"
 
 export interface WorkerCondition<T>{
     /**
@@ -37,7 +37,7 @@ export interface WorkerCondition<T>{
     /**
      * Comparison value
      */
-    value: any
+    value?: any
 
 }
 
