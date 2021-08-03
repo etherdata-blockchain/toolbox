@@ -1,4 +1,4 @@
-import {BasePlugin} from "./base";
+import {BasePlugin} from "../plugin/base";
 import {Callbacks, Worker, WorkerCondition, WorkerStatus} from "../interfaces";
 import CancelablePromise from "cancelable-promise";
 

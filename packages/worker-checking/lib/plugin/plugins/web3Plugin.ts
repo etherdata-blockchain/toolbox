@@ -44,7 +44,7 @@ export class Web3Plugin extends BasePlugin {
     private async checkIsSyncing(worker: Worker): Promise<[boolean, string | undefined]> {
         try {
             let web3 = new Web3(this.getWeb3URL(worker.remote))
-            return [await web3.eth.isSyncing() === false, undefined]
+            return [await web3.eth.isSyncing() === true, undefined]
         } catch (err) {
             Logger.error(`${this.pluginName}: ${worker.remote} => ${err}`)
             return [false, err.toString()]
