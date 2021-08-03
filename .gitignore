@@ -10,3 +10,5 @@ node_modules
 yarn.lock
 configs
 remote-ssh
+!packages/worker-checking/dist
+!packages/remote-ssh/dist

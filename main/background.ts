@@ -13,9 +13,8 @@ const isProd: boolean = process.env.NODE_ENV === "production";
 let isStarted = false;
 // List of workers which will be used for action running
 let workers: WorkerStatus[] = [];
-let cancelableJob: CancelablePromise<any> | undefined;
-// Store system default env
-const systemEnv = process.env;
+let cancelableRemoteJob: CancelablePromise<any> | undefined;
+let cancelableWorkerCheckingJob: CancelablePromise<any> | undefined;
 
 if (isProd) {
   serve({ directory: "app" });
@@ -44,6 +43,7 @@ app.on("window-all-closed", () => {
   app.quit();
 });
 
+/// Start running remote-config
 ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
   console.log("Start processing actions", filename, "with env", env);
   // Set environment variables based on the env
@@ -82,7 +82,7 @@ ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
       // Update event will includes the list of workers
       event.reply("update", workers);
       // Create a cancelable promise
-      cancelableJob = config.runRemoteCommand({
+      cancelableRemoteJob = config.runRemoteCommand({
         onCommandEnd(index: number, command: string, progress: number) {
           workers[index].currentProgress = workers[index].currentProgress + 1;
           event.reply("update", workers);
@@ -117,7 +117,7 @@ ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
         },
       });
 
-      cancelableJob
+      cancelableRemoteJob
         .then((results) => {
           Logger.info("Action finished");
           new Notification({
@@ -152,7 +152,7 @@ ipcMain.on("start", async (event, filename, env: { [key: string]: string }) => {
 ipcMain.on("stop", (event) => {
   Logger.info("Stopped");
   new Notification({ title: "Workers stopped" }).show();
-  cancelableJob.cancel();
-  isStarted = !cancelableJob.isCanceled();
+  cancelableRemoteJob.cancel();
+  isStarted = !cancelableRemoteJob.isCanceled();
   event.reply("status", isStarted);
 });

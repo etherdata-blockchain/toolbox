@@ -21,15 +21,16 @@ jobs:
       - name: Installing typescript
         run: yarn global add typescript
 
-      - name: 🔨 Installing dependencies
-        run: yarn install
-
       - name: Building remote-ssh package
         run: tsc
         working-directory: packages/remote-ssh
 
-      - name: Installing remote-ssh package
-        run: yarn add file:./packages/remote-ssh
+      - name: Building worker-checking package
+        run: tsc
+        working-directory: packages/worker-checking
+
+      - name: 🔨 Installing dependencies
+        run: yarn install
 
       - name: 🔨 Building app
         run: yarn build

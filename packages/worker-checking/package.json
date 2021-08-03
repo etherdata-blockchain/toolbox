@@ -1,5 +1,5 @@
 {
-  "name": "remote-ssh",
+  "name": "worker-checking",
   "version": "0.2.3",
   "description": "Remote ssh config file",
   "main": "dist/index.js",
