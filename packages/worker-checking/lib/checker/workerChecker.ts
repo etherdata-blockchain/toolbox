@@ -47,7 +47,7 @@ export class WorkerChecker {
           onDone(result, index, pluginIndex);
         }
         results.push(result);
-        index += 1;
+        pluginIndex += 1;
       }
       resolve(results);
     });
@@ -68,13 +68,13 @@ export class WorkerChecker {
       /// Deep copy workers
       let copiedWorkers: Worker[] = JSON.parse(JSON.stringify(workers));
       let returnResults: WorkerStatus[][] = [];
-
+      let totalIndex = 0
       /// Split workers into multiple parts
       while (copiedWorkers.length > 0) {
         let splitWorkers = copiedWorkers.splice(0, this.concurrency);
         let promises = splitWorkers.map((r, index) => {
           return this.doCheckingHelper(
-            index,
+            index + totalIndex,
             splitWorkers[index],
             condition,
             callbacks
@@ -89,6 +89,7 @@ export class WorkerChecker {
 
         let results = await CancelablePromise.all(promises);
         returnResults = returnResults.concat(results);
+        totalIndex += splitWorkers.length
       }
 
       resolve(returnResults);
