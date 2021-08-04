@@ -83,7 +83,7 @@ var WorkerChecker = /** @class */ (function () {
                             onDone(result, index, pluginIndex);
                         }
                         results.push(result);
-                        index += 1;
+                        pluginIndex += 1;
                         _b.label = 3;
                     case 3:
                         _i++;
@@ -104,13 +104,14 @@ var WorkerChecker = /** @class */ (function () {
     WorkerChecker.prototype.doChecking = function (workers, condition, callbacks) {
         var _this = this;
         return new cancelable_promise_1.default(function (resolve, reject, onCancel) { return __awaiter(_this, void 0, void 0, function () {
-            var copiedWorkers, returnResults, _loop_1, this_1;
+            var copiedWorkers, returnResults, totalIndex, _loop_1, this_1;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         copiedWorkers = JSON.parse(JSON.stringify(workers));
                         returnResults = [];
+                        totalIndex = 0;
                         _loop_1 = function () {
                             var splitWorkers, promises, results;
                             return __generator(this, function (_b) {
@@ -118,7 +119,7 @@ var WorkerChecker = /** @class */ (function () {
                                     case 0:
                                         splitWorkers = copiedWorkers.splice(0, this_1.concurrency);
                                         promises = splitWorkers.map(function (r, index) {
-                                            return _this.doCheckingHelper(index, splitWorkers[index], condition, callbacks);
+                                            return _this.doCheckingHelper(index + totalIndex, splitWorkers[index], condition, callbacks);
                                         });
                                         onCancel(function () {
                                             for (var _i = 0, promises_1 = promises; _i < promises_1.length; _i++) {
@@ -129,7 +130,8 @@ var WorkerChecker = /** @class */ (function () {
                                         return [4 /*yield*/, cancelable_promise_1.default.all(promises)];
                                     case 1:
                                         results = _b.sent();
-                                        returnResults.concat(results);
+                                        returnResults = returnResults.concat(results);
+                                        totalIndex += splitWorkers.length;
                                         return [2 /*return*/];
                                 }
                             });
