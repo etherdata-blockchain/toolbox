@@ -57,7 +57,9 @@ export default function Index(props: Props) {
 
       {workers.length > 0 && (
         <Affix style={{ position: "absolute", right: 10, bottom: 10 }}>
-          <Button danger>Founded errors: {workers.length}</Button>
+          <Button danger>
+            Founded errors: {workers.filter((w) => !w.success).length}
+          </Button>
         </Affix>
       )}
     </div>
