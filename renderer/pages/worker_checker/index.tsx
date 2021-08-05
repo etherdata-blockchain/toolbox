@@ -1,7 +1,16 @@
 // @flow
 import * as React from "react";
 import { WorkerSelections } from "../../component/worker_scanner/selections";
-import { Card, Col, Progress, Row, Spin, Typography } from "antd";
+import {
+  Affix,
+  Button,
+  Card,
+  Col,
+  Progress,
+  Row,
+  Spin,
+  Typography,
+} from "antd";
 import { RemoteList } from "../../component/worker_scanner/RemoteList";
 import { WorkerCheckerContext } from "../../models/workerChecker";
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -31,17 +40,26 @@ export default function Index(props: Props) {
             </Col>
             <Col span={4}>
               <Typography>
-                Found {workers.length} / {remotes.length}
+                Scanned {workers.length} / {remotes.length}
               </Typography>
             </Col>
-            <Col span={18}>
-              <Progress percent={(progress / remotes.length) * 100} />
+            <Col span={16}>
+              <Progress
+                percent={(progress / remotes.length) * 100}
+                format={(percent) => percent.toFixed(1) + "%"}
+              />
             </Col>
           </Row>
         </Card>
       )}
 
       <RemoteList />
+
+      {workers.length > 0 && (
+        <Affix style={{ position: "absolute", right: 10, bottom: 10 }}>
+          <Button danger>Founded errors: {workers.length}</Button>
+        </Affix>
+      )}
     </div>
   );
 }

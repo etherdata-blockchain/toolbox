@@ -136,8 +136,8 @@ export function RemoteActions(props: Props) {
           form={settingsForm}
           name={"env"}
           initialValues={initEnvs}
-          onValuesChange={(_, values) => {
-            onEnvChanged(values.env);
+          onValuesChange={async (_, values) => {
+            await onEnvChanged(values.env);
           }}
         >
           <Typography.Title level={4}>Environments</Typography.Title>
