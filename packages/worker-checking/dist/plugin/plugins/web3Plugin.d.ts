@@ -31,6 +31,13 @@ export declare class Web3Plugin extends BasePlugin {
      */
     private checkChainID;
     /**
+     * Check chain id is equal
+     * @param worker
+     * @param condition
+     * @private
+     */
+    private checkCoinbase;
+    /**
      * Check block number
      * @param worker
      * @param condition

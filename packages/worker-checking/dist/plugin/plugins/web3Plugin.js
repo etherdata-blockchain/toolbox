@@ -183,6 +183,39 @@ var Web3Plugin = /** @class */ (function (_super) {
         });
     };
     /**
+     * Check chain id is equal
+     * @param worker
+     * @param condition
+     * @private
+     */
+    Web3Plugin.prototype.checkCoinbase = function (worker, condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var comparison, value, admin, coinbase, err_5;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        comparison = condition.comparison, value = condition.value;
+                        if (!(comparison === "equal")) return [3 /*break*/, 5];
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        admin = new web3_1.default(this.getWeb3URL(worker.remote));
+                        return [4 /*yield*/, admin.eth.getCoinbase()];
+                    case 2:
+                        coinbase = _a.sent();
+                        return [2 /*return*/, this.equal("" + coinbase, value, "Coinbase is not equal")];
+                    case 3:
+                        err_5 = _a.sent();
+                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_5);
+                        return [2 /*return*/, [false, err_5.toString()]];
+                    case 4: return [3 /*break*/, 6];
+                    case 5: return [2 /*return*/, [false, "Can only do equal checking on coinbase"]];
+                    case 6: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
      * Check block number
      * @param worker
      * @param condition
@@ -190,7 +223,7 @@ var Web3Plugin = /** @class */ (function (_super) {
      */
     Web3Plugin.prototype.checkBlockNumber = function (worker, condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var comparison, value, web3, blockNumber, err_5;
+            var comparison, value, web3, blockNumber, err_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -216,9 +249,9 @@ var Web3Plugin = /** @class */ (function (_super) {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        err_5 = _a.sent();
-                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_5);
-                        return [2 /*return*/, [false, err_5.toString()]];
+                        err_6 = _a.sent();
+                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_6);
+                        return [2 /*return*/, [false, err_6.toString()]];
                     case 4: return [2 /*return*/];
                 }
             });
@@ -232,7 +265,7 @@ var Web3Plugin = /** @class */ (function (_super) {
      */
     Web3Plugin.prototype.checkPeerCount = function (worker, condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var comparison, value, web3, peerCount, err_6;
+            var comparison, value, web3, peerCount, err_7;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -258,9 +291,9 @@ var Web3Plugin = /** @class */ (function (_super) {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        err_6 = _a.sent();
-                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_6);
-                        return [2 /*return*/, [false, err_6.toString()]];
+                        err_7 = _a.sent();
+                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_7);
+                        return [2 /*return*/, [false, err_7.toString()]];
                     case 4: return [2 /*return*/];
                 }
             });
@@ -268,9 +301,9 @@ var Web3Plugin = /** @class */ (function (_super) {
     };
     Web3Plugin.prototype.doChecking = function (worker, condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var remote, workingType, comparison, _a, _b, isMining, miningErr, _c, isSyncing, syncingErr, _d, isNodeEqual, nodeErr, _e, isChainIDEqual, chainIDErr, _f, blockNumberResult, blockNumberErr, _g, peerCountResult, peerCountErr;
-            return __generator(this, function (_h) {
-                switch (_h.label) {
+            var remote, workingType, comparison, _a, _b, isMining, miningErr, _c, isSyncing, syncingErr, _d, isNodeEqual, nodeErr, _e, isChainIDEqual, chainIDErr, _f, isCoinbaseEqual, coinbaseErr, _g, blockNumberResult, blockNumberErr, _h, peerCountResult, peerCountErr;
+            return __generator(this, function (_j) {
+                switch (_j.label) {
                     case 0:
                         remote = worker.remote;
                         workingType = condition.workingType, comparison = condition.comparison;
@@ -280,13 +313,14 @@ var Web3Plugin = /** @class */ (function (_super) {
                             case "isSyncing": return [3 /*break*/, 3];
                             case "nodeVersion": return [3 /*break*/, 5];
                             case "chainID": return [3 /*break*/, 7];
-                            case "blockNumber": return [3 /*break*/, 9];
-                            case "peerCount": return [3 /*break*/, 11];
+                            case "coinbase": return [3 /*break*/, 9];
+                            case "blockNumber": return [3 /*break*/, 11];
+                            case "peerCount": return [3 /*break*/, 13];
                         }
-                        return [3 /*break*/, 13];
+                        return [3 /*break*/, 15];
                     case 1: return [4 /*yield*/, this.checkIsMining(worker)];
                     case 2:
-                        _b = _h.sent(), isMining = _b[0], miningErr = _b[1];
+                        _b = _j.sent(), isMining = _b[0], miningErr = _b[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Is Mining",
@@ -295,7 +329,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 3: return [4 /*yield*/, this.checkIsSyncing(worker)];
                     case 4:
-                        _c = _h.sent(), isSyncing = _c[0], syncingErr = _c[1];
+                        _c = _j.sent(), isSyncing = _c[0], syncingErr = _c[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Is Syncing",
@@ -304,7 +338,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 5: return [4 /*yield*/, this.checkNodeVersion(worker, condition)];
                     case 6:
-                        _d = _h.sent(), isNodeEqual = _d[0], nodeErr = _d[1];
+                        _d = _j.sent(), isNodeEqual = _d[0], nodeErr = _d[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Node Version",
@@ -313,32 +347,41 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 7: return [4 /*yield*/, this.checkChainID(worker, condition)];
                     case 8:
-                        _e = _h.sent(), isChainIDEqual = _e[0], chainIDErr = _e[1];
+                        _e = _j.sent(), isChainIDEqual = _e[0], chainIDErr = _e[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "ChainID",
                                 message: chainIDErr !== null && chainIDErr !== void 0 ? chainIDErr : "" + isChainIDEqual,
                                 success: isChainIDEqual,
                             }];
-                    case 9: return [4 /*yield*/, this.checkBlockNumber(worker, condition)];
+                    case 9: return [4 /*yield*/, this.checkChainID(worker, condition)];
                     case 10:
-                        _f = _h.sent(), blockNumberResult = _f[0], blockNumberErr = _f[1];
+                        _f = _j.sent(), isCoinbaseEqual = _f[0], coinbaseErr = _f[1];
+                        return [2 /*return*/, {
+                                remote: remote,
+                                title: "Coinbase",
+                                message: coinbaseErr !== null && coinbaseErr !== void 0 ? coinbaseErr : "" + isCoinbaseEqual,
+                                success: isCoinbaseEqual,
+                            }];
+                    case 11: return [4 /*yield*/, this.checkBlockNumber(worker, condition)];
+                    case 12:
+                        _g = _j.sent(), blockNumberResult = _g[0], blockNumberErr = _g[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Block Number",
                                 message: blockNumberErr !== null && blockNumberErr !== void 0 ? blockNumberErr : "" + blockNumberResult,
                                 success: blockNumberResult,
                             }];
-                    case 11: return [4 /*yield*/, this.checkPeerCount(worker, condition)];
-                    case 12:
-                        _g = _h.sent(), peerCountResult = _g[0], peerCountErr = _g[1];
+                    case 13: return [4 /*yield*/, this.checkPeerCount(worker, condition)];
+                    case 14:
+                        _h = _j.sent(), peerCountResult = _h[0], peerCountErr = _h[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Peer Count",
                                 message: peerCountErr !== null && peerCountErr !== void 0 ? peerCountErr : "" + peerCountResult,
                                 success: peerCountResult,
                             }];
-                    case 13: return [2 /*return*/, this.getDefaultWorkerStatus(worker)];
+                    case 15: return [2 /*return*/, this.getDefaultWorkerStatus(worker)];
                 }
             });
         });
