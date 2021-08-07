@@ -354,7 +354,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                                 message: chainIDErr !== null && chainIDErr !== void 0 ? chainIDErr : "" + isChainIDEqual,
                                 success: isChainIDEqual,
                             }];
-                    case 9: return [4 /*yield*/, this.checkChainID(worker, condition)];
+                    case 9: return [4 /*yield*/, this.checkCoinbase(worker, condition)];
                     case 10:
                         _f = _j.sent(), isCoinbaseEqual = _f[0], coinbaseErr = _f[1];
                         return [2 /*return*/, {

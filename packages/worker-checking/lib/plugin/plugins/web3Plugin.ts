@@ -260,7 +260,7 @@ export class Web3Plugin extends BasePlugin {
         };
 
       case "coinbase":
-        let [isCoinbaseEqual, coinbaseErr] = await this.checkChainID(
+        let [isCoinbaseEqual, coinbaseErr] = await this.checkCoinbase(
           worker,
           condition
         );
