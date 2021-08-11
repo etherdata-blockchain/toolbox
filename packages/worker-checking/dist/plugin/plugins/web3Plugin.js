@@ -422,7 +422,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                                 message: peerCountErr !== null && peerCountErr !== void 0 ? peerCountErr : "" + peerCountResult,
                                 success: peerCountResult,
                             }];
-                    case 15: return [4 /*yield*/, this.checkPeerCount(worker, condition)];
+                    case 15: return [4 /*yield*/, this.checkHashRate(worker, condition)];
                     case 16:
                         _j = _k.sent(), hashRateResult = _j[0], hashRateErr = _j[1];
                         return [2 /*return*/, {

@@ -337,7 +337,7 @@ export class Web3Plugin extends BasePlugin {
         };
 
       case "hashRate":
-        let [hashRateResult, hashRateErr] = await this.checkPeerCount(
+        let [hashRateResult, hashRateErr] = await this.checkHashRate(
           worker,
           condition
         );
