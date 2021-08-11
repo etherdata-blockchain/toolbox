@@ -1,6 +1,6 @@
 import { BasePlugin } from "../base";
 import { WorkerCondition, WorkerStatus, Worker } from "../../interfaces";
-export declare type Web3PluginAcceptType = "isMining" | "isSyncing" | "coinbase" | "nodeVersion" | "chainID" | "blockNumber" | "peerCount";
+export declare type Web3PluginAcceptType = "isMining" | "isSyncing" | "coinbase" | "nodeVersion" | "chainID" | "blockNumber" | "hashRate" | "peerCount";
 export declare class Web3Plugin extends BasePlugin {
     pluginName: string;
     private getWeb3URL;
@@ -31,7 +31,7 @@ export declare class Web3Plugin extends BasePlugin {
      */
     private checkChainID;
     /**
-     * Check chain id is equal
+     * Check coinbase
      * @param worker
      * @param condition
      * @private
@@ -44,6 +44,13 @@ export declare class Web3Plugin extends BasePlugin {
      * @private
      */
     private checkBlockNumber;
+    /**
+     * Check hashRate
+     * @param worker
+     * @param condition
+     * @private
+     */
+    private checkHashRate;
     /**
      * Check peer count
      * @param worker

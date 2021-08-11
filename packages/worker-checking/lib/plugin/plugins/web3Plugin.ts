@@ -10,6 +10,7 @@ export type Web3PluginAcceptType =
   | "nodeVersion"
   | "chainID"
   | "blockNumber"
+  | "hashRate"
   | "peerCount";
 
 export class Web3Plugin extends BasePlugin {
@@ -104,7 +105,7 @@ export class Web3Plugin extends BasePlugin {
   }
 
   /**
-   * Check chain id is equal
+   * Check coinbase
    * @param worker
    * @param condition
    * @private
@@ -159,6 +160,47 @@ export class Web3Plugin extends BasePlugin {
           blockNumber,
           parseInt(value),
           "Block Number checking failed"
+        );
+      } else {
+        return [false, "No such method"];
+      }
+    } catch (err) {
+      Logger.error(`${this.pluginName}: ${worker.remote} -> ${err}`);
+      return [false, err.toString()];
+    }
+  }
+
+  /**
+   * Check hashRate
+   * @param worker
+   * @param condition
+   * @private
+   */
+  private async checkHashRate(
+    worker: Worker,
+    condition: WorkerCondition<Web3PluginAcceptType>
+  ): Promise<[boolean, string | undefined]> {
+    const { comparison, value } = condition;
+    try {
+      let web3 = new Web3(this.getWeb3URL(worker.remote));
+      let hashRate = await web3.eth.getHashrate();
+      if (comparison === "greater") {
+        return this.greaterThan(
+          hashRate,
+          parseInt(value),
+          "HashRate checking failed"
+        );
+      } else if (comparison === "less") {
+        return this.lessThan(
+          hashRate,
+          parseInt(value),
+          "HashRate checking failed"
+        );
+      } else if (comparison === "equal") {
+        return this.equal(
+          hashRate,
+          parseInt(value),
+          "HashRate checking failed"
         );
       } else {
         return [false, "No such method"];
@@ -292,6 +334,18 @@ export class Web3Plugin extends BasePlugin {
           title: "Peer Count",
           message: peerCountErr ?? `${peerCountResult}`,
           success: peerCountResult,
+        };
+
+      case "hashRate":
+        let [hashRateResult, hashRateErr] = await this.checkPeerCount(
+          worker,
+          condition
+        );
+        return {
+          remote,
+          title: "HashRate",
+          message: hashRateErr ?? `${hashRateResult}`,
+          success: hashRateResult,
         };
     }
     return this.getDefaultWorkerStatus(worker);

@@ -3,12 +3,10 @@ var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
             ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
         return extendStatics(d, b);
     };
     return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
         extendStatics(d, b);
         function __() { this.constructor = d; }
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
@@ -183,7 +181,7 @@ var Web3Plugin = /** @class */ (function (_super) {
         });
     };
     /**
-     * Check chain id is equal
+     * Check coinbase
      * @param worker
      * @param condition
      * @private
@@ -258,6 +256,48 @@ var Web3Plugin = /** @class */ (function (_super) {
         });
     };
     /**
+     * Check hashRate
+     * @param worker
+     * @param condition
+     * @private
+     */
+    Web3Plugin.prototype.checkHashRate = function (worker, condition) {
+        return __awaiter(this, void 0, void 0, function () {
+            var comparison, value, web3, hashRate, err_7;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        comparison = condition.comparison, value = condition.value;
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        web3 = new web3_1.default(this.getWeb3URL(worker.remote));
+                        return [4 /*yield*/, web3.eth.getHashrate()];
+                    case 2:
+                        hashRate = _a.sent();
+                        if (comparison === "greater") {
+                            return [2 /*return*/, this.greaterThan(hashRate, parseInt(value), "HashRate checking failed")];
+                        }
+                        else if (comparison === "less") {
+                            return [2 /*return*/, this.lessThan(hashRate, parseInt(value), "HashRate checking failed")];
+                        }
+                        else if (comparison === "equal") {
+                            return [2 /*return*/, this.equal(hashRate, parseInt(value), "HashRate checking failed")];
+                        }
+                        else {
+                            return [2 /*return*/, [false, "No such method"]];
+                        }
+                        return [3 /*break*/, 4];
+                    case 3:
+                        err_7 = _a.sent();
+                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_7);
+                        return [2 /*return*/, [false, err_7.toString()]];
+                    case 4: return [2 /*return*/];
+                }
+            });
+        });
+    };
+    /**
      * Check peer count
      * @param worker
      * @param condition
@@ -265,7 +305,7 @@ var Web3Plugin = /** @class */ (function (_super) {
      */
     Web3Plugin.prototype.checkPeerCount = function (worker, condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var comparison, value, web3, peerCount, err_7;
+            var comparison, value, web3, peerCount, err_8;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -291,9 +331,9 @@ var Web3Plugin = /** @class */ (function (_super) {
                         }
                         return [3 /*break*/, 4];
                     case 3:
-                        err_7 = _a.sent();
-                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_7);
-                        return [2 /*return*/, [false, err_7.toString()]];
+                        err_8 = _a.sent();
+                        logger_1.default.error(this.pluginName + ": " + worker.remote + " -> " + err_8);
+                        return [2 /*return*/, [false, err_8.toString()]];
                     case 4: return [2 /*return*/];
                 }
             });
@@ -301,9 +341,9 @@ var Web3Plugin = /** @class */ (function (_super) {
     };
     Web3Plugin.prototype.doChecking = function (worker, condition) {
         return __awaiter(this, void 0, void 0, function () {
-            var remote, workingType, comparison, _a, _b, isMining, miningErr, _c, isSyncing, syncingErr, _d, isNodeEqual, nodeErr, _e, isChainIDEqual, chainIDErr, _f, isCoinbaseEqual, coinbaseErr, _g, blockNumberResult, blockNumberErr, _h, peerCountResult, peerCountErr;
-            return __generator(this, function (_j) {
-                switch (_j.label) {
+            var remote, workingType, comparison, _a, _b, isMining, miningErr, _c, isSyncing, syncingErr, _d, isNodeEqual, nodeErr, _e, isChainIDEqual, chainIDErr, _f, isCoinbaseEqual, coinbaseErr, _g, blockNumberResult, blockNumberErr, _h, peerCountResult, peerCountErr, _j, hashRateResult, hashRateErr;
+            return __generator(this, function (_k) {
+                switch (_k.label) {
                     case 0:
                         remote = worker.remote;
                         workingType = condition.workingType, comparison = condition.comparison;
@@ -316,11 +356,12 @@ var Web3Plugin = /** @class */ (function (_super) {
                             case "coinbase": return [3 /*break*/, 9];
                             case "blockNumber": return [3 /*break*/, 11];
                             case "peerCount": return [3 /*break*/, 13];
+                            case "hashRate": return [3 /*break*/, 15];
                         }
-                        return [3 /*break*/, 15];
+                        return [3 /*break*/, 17];
                     case 1: return [4 /*yield*/, this.checkIsMining(worker)];
                     case 2:
-                        _b = _j.sent(), isMining = _b[0], miningErr = _b[1];
+                        _b = _k.sent(), isMining = _b[0], miningErr = _b[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Is Mining",
@@ -329,7 +370,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 3: return [4 /*yield*/, this.checkIsSyncing(worker)];
                     case 4:
-                        _c = _j.sent(), isSyncing = _c[0], syncingErr = _c[1];
+                        _c = _k.sent(), isSyncing = _c[0], syncingErr = _c[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Is Syncing",
@@ -338,7 +379,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 5: return [4 /*yield*/, this.checkNodeVersion(worker, condition)];
                     case 6:
-                        _d = _j.sent(), isNodeEqual = _d[0], nodeErr = _d[1];
+                        _d = _k.sent(), isNodeEqual = _d[0], nodeErr = _d[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Node Version",
@@ -347,7 +388,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 7: return [4 /*yield*/, this.checkChainID(worker, condition)];
                     case 8:
-                        _e = _j.sent(), isChainIDEqual = _e[0], chainIDErr = _e[1];
+                        _e = _k.sent(), isChainIDEqual = _e[0], chainIDErr = _e[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "ChainID",
@@ -356,7 +397,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 9: return [4 /*yield*/, this.checkCoinbase(worker, condition)];
                     case 10:
-                        _f = _j.sent(), isCoinbaseEqual = _f[0], coinbaseErr = _f[1];
+                        _f = _k.sent(), isCoinbaseEqual = _f[0], coinbaseErr = _f[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Coinbase",
@@ -365,7 +406,7 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 11: return [4 /*yield*/, this.checkBlockNumber(worker, condition)];
                     case 12:
-                        _g = _j.sent(), blockNumberResult = _g[0], blockNumberErr = _g[1];
+                        _g = _k.sent(), blockNumberResult = _g[0], blockNumberErr = _g[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Block Number",
@@ -374,14 +415,23 @@ var Web3Plugin = /** @class */ (function (_super) {
                             }];
                     case 13: return [4 /*yield*/, this.checkPeerCount(worker, condition)];
                     case 14:
-                        _h = _j.sent(), peerCountResult = _h[0], peerCountErr = _h[1];
+                        _h = _k.sent(), peerCountResult = _h[0], peerCountErr = _h[1];
                         return [2 /*return*/, {
                                 remote: remote,
                                 title: "Peer Count",
                                 message: peerCountErr !== null && peerCountErr !== void 0 ? peerCountErr : "" + peerCountResult,
                                 success: peerCountResult,
                             }];
-                    case 15: return [2 /*return*/, this.getDefaultWorkerStatus(worker)];
+                    case 15: return [4 /*yield*/, this.checkPeerCount(worker, condition)];
+                    case 16:
+                        _j = _k.sent(), hashRateResult = _j[0], hashRateErr = _j[1];
+                        return [2 /*return*/, {
+                                remote: remote,
+                                title: "HashRate",
+                                message: hashRateErr !== null && hashRateErr !== void 0 ? hashRateErr : "" + hashRateResult,
+                                success: hashRateResult,
+                            }];
+                    case 17: return [2 /*return*/, this.getDefaultWorkerStatus(worker)];
                 }
             });
         });

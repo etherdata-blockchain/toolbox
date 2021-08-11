@@ -16,6 +16,7 @@ export function WorkerSelections(props: Props) {
     "nodeVersion",
     "peerCount",
     "chainID",
+    "hashRate",
   ];
 
   const comparison: Comparison[] = ["greater", "less", "equal"];
