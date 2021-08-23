@@ -4,6 +4,7 @@ import {
   CodepenOutlined,
   HomeOutlined,
   SecurityScanOutlined,
+  DesktopOutlined,
 } from "@ant-design/icons";
 import { PageLayout } from "../component/pageLayout";
 import { RemoteActions } from "../component/remote_ssh/components/actions";
@@ -12,6 +13,8 @@ import "../styles/Global.css";
 import path from "path";
 import { WorkerActions } from "../component/worker_scanner/actions";
 import { WorkerCheckerProvider } from "../models/workerChecker";
+import { JsonRPCAction } from "../component/json_rpc/actions";
+import { JsonRpcProvider } from "../models/jsonRpc";
 
 function ensureFirstBackSlash(str) {
   return str.length > 0 && str.charAt(0) !== "/" ? "/" + str : str;
@@ -43,14 +46,22 @@ function MyApp(props: AppProps) {
       link: "/worker_checker",
       actions: <WorkerActions />,
     },
+    {
+      title: "JSON RPC",
+      icon: <DesktopOutlined />,
+      link: "/json_rpc",
+      actions: <JsonRPCAction />,
+    },
   ];
 
   return (
     <WorkerCheckerProvider>
       <RemoteSshProvider>
-        <PageLayout menus={menus}>
-          <Component {...pageProps} />
-        </PageLayout>
+        <JsonRpcProvider>
+          <PageLayout menus={menus}>
+            <Component {...pageProps} />
+          </PageLayout>
+        </JsonRpcProvider>
       </RemoteSshProvider>
     </WorkerCheckerProvider>
   );

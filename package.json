@@ -23,6 +23,7 @@
     "cancelable-promise": "^4.2.1",
     "electron-serve": "^1.1.0",
     "electron-store": "^7.0.2",
+    "etd-react-ui": "^1.0.0",
     "pouchdb": "^7.2.2",
     "prettier": "^2.3.2",
     "remote-ssh": "./packages/remote-ssh",

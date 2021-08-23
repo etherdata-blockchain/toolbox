@@ -1,3 +1,13 @@
-body{
+body {
     overflow-y: hidden;
+}
+
+.form-item {
+    margin: 10px;
+    padding: 10px
+}
+
+.rpcTab {
+    height: calc(100vh - 140px);
+    overflow-y: scroll;
 }
