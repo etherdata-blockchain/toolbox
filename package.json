@@ -3,7 +3,7 @@
   "name": "remote-config",
   "description": "GUI Application for remote-config",
   "repository": "https://github.com/crypyto-panel/remote-config-gui.git",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "author": "sirily11 <sirily1997@gmail.com>",
   "main": "app/background.js",
   "scripts": {
