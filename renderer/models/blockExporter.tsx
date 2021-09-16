@@ -40,7 +40,7 @@ export function BlockExporterProvider({ children }: Props) {
   const [output, setOutput] = React.useState("");
   const [total, setTotal] = React.useState(0);
   const [isStarted, setIsStarted] = React.useState(false);
-  const [currentBlock, setCurrentBlock] = React.useState();
+  const [currentBlock, setCurrentBlock] = React.useState<any>();
   const [concurrency, setConcurrency] = React.useState(1);
 
   React.useEffect(() => {

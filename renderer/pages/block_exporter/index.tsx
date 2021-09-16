@@ -1,7 +1,11 @@
 import React from "react";
 import { BlockExporterContext } from "../../models/blockExporter";
 import { Card, Col, Progress, Row } from "antd";
-import ReactJson from "react-json-view";
+import dynamic from "next/dynamic";
+
+const ReactJson =
+  typeof window !== "undefined" &&
+  dynamic(() => import("react-json-view"), { ssr: false });
 
 function Index() {
   const { current, total, isStarted, currentBlock } =
@@ -20,7 +24,7 @@ function Index() {
           />
         </Row>
       </Card>
-      <ReactJson src={currentBlock} />
+      {ReactJson && <ReactJson src={currentBlock} />}
     </div>
   );
 }
