@@ -13,3 +13,4 @@ remote-ssh
 !packages/remote-ssh
 !packages/worker-checking/dist
 !packages/remote-ssh/dist
+!packages/block-exporter/dist

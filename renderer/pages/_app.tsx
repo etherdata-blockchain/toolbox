@@ -5,6 +5,7 @@ import {
   HomeOutlined,
   SecurityScanOutlined,
   DesktopOutlined,
+  BlockOutlined,
 } from "@ant-design/icons";
 import { PageLayout } from "../component/pageLayout";
 import { RemoteActions } from "../component/remote_ssh/components/actions";
@@ -15,6 +16,8 @@ import { WorkerActions } from "../component/worker_scanner/actions";
 import { WorkerCheckerProvider } from "../models/workerChecker";
 import { JsonRPCAction } from "../component/json_rpc/actions";
 import { JsonRpcProvider } from "../models/jsonRpc";
+import { BlockExporterAction } from "../component/block_exporter/actions";
+import { BlockExporterProvider } from "../models/blockExporter";
 
 function ensureFirstBackSlash(str) {
   return str.length > 0 && str.charAt(0) !== "/" ? "/" + str : str;
@@ -52,18 +55,26 @@ function MyApp(props: AppProps) {
       link: "/json_rpc",
       actions: <JsonRPCAction />,
     },
+    {
+      title: "Block Exporter",
+      icon: <BlockOutlined />,
+      link: "/block_exporter",
+      actions: <BlockExporterAction />,
+    },
   ];
 
   return (
-    <WorkerCheckerProvider>
-      <RemoteSshProvider>
-        <JsonRpcProvider>
-          <PageLayout menus={menus}>
-            <Component {...pageProps} />
-          </PageLayout>
-        </JsonRpcProvider>
-      </RemoteSshProvider>
-    </WorkerCheckerProvider>
+    <BlockExporterProvider>
+      <WorkerCheckerProvider>
+        <RemoteSshProvider>
+          <JsonRpcProvider>
+            <PageLayout menus={menus}>
+              <Component {...pageProps} />
+            </PageLayout>
+          </JsonRpcProvider>
+        </RemoteSshProvider>
+      </WorkerCheckerProvider>
+    </BlockExporterProvider>
   );
 }
 

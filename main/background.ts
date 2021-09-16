@@ -13,6 +13,7 @@ import {
 } from "worker-checking";
 import { getPluginsByName } from "./helpers/worker-checking-utils";
 import { WorkerStatus as WorkerCheckingStatus } from "worker-checking";
+import { BlockExporter } from "block-exporter";
 
 require("@electron/remote/main").initialize();
 
@@ -23,6 +24,7 @@ let isRemoteSSHStarted = false;
 
 // Indicate whether worker checker is running
 let isWorkerCheckerStarted = false;
+let isBlockExporterStarted = false;
 
 // List of workers which will be used for action running
 let workers: WorkerStatus[] = [];
@@ -30,6 +32,7 @@ let workers: WorkerStatus[] = [];
 // Cancelable promises, used to stop jobs
 let cancelableRemoteJob: CancelablePromise<any> | undefined;
 let cancelableWorkerCheckingJob: CancelablePromise<any> | undefined;
+let cancelableBlockExporterJob: CancelablePromise<any> | undefined;
 
 if (isProd) {
   serve({ directory: "app" });
@@ -243,4 +246,45 @@ ipcMain.on("stop-worker-checking", (event) => {
   cancelableWorkerCheckingJob?.cancel();
   isWorkerCheckerStarted = false;
   event.reply("checker-start-status", isWorkerCheckerStarted);
+});
+
+ipcMain.on(
+  "block_exporter_start",
+  (e, { host, port, output, concurrency }: any) => {
+    console.log("Getting concurrency " + concurrency);
+    let blockExporter = new BlockExporter(host, port, output, concurrency);
+    isBlockExporterStarted = true;
+    e.reply("block-exporter-status-changed", isBlockExporterStarted);
+
+    cancelableBlockExporterJob = blockExporter.check(
+      (current, total, blockData) => {
+        e.reply("block-exporter-update", { current, total, blockData });
+      },
+      (err) => {
+        throw err;
+        e.reply("block-exporter-error", err);
+      }
+    );
+
+    cancelableBlockExporterJob
+      .then(() => {
+        isBlockExporterStarted = false;
+        e.reply("block-exporter-status-changed", isBlockExporterStarted);
+        new Notification({
+          title: "Finished",
+          subtitle: "Block Exporter",
+        }).show();
+      })
+      .catch((err) => {
+        isBlockExporterStarted = false;
+        e.reply("block-exporter-status-changed", isBlockExporterStarted);
+        e.reply("block-exporter-error", err);
+      });
+  }
+);
+
+ipcMain.on("block_exporter_stop", (e) => {
+  cancelableBlockExporterJob?.cancel();
+  isBlockExporterStarted = false;
+  e.reply("block-exporter-status-changed", isBlockExporterStarted);
 });

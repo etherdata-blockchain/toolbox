@@ -114,8 +114,8 @@ var WorkerChecker = /** @class */ (function () {
                         totalIndex = 0;
                         _loop_1 = function () {
                             var splitWorkers, promises, results;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
+                            return __generator(this, function (_b) {
+                                switch (_b.label) {
                                     case 0:
                                         splitWorkers = copiedWorkers.splice(0, this_1.concurrency);
                                         promises = splitWorkers.map(function (r, index) {
@@ -129,7 +129,7 @@ var WorkerChecker = /** @class */ (function () {
                                         });
                                         return [4 /*yield*/, cancelable_promise_1.default.all(promises)];
                                     case 1:
-                                        results = _a.sent();
+                                        results = _b.sent();
                                         returnResults = returnResults.concat(results);
                                         totalIndex += splitWorkers.length;
                                         return [2 /*return*/];

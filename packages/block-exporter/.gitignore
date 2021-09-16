@@ -1,0 +1,9 @@
+node_modules
+test.yml
+package-lock.json
+yarn.lock
+*.env
+*.zip
+!jest.config.js
+
+out.json
