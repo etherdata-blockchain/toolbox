@@ -251,7 +251,6 @@ ipcMain.on("stop-worker-checking", (event) => {
 ipcMain.on(
   "block_exporter_start",
   (e, { host, port, output, concurrency }: any) => {
-    console.log("Getting concurrency " + concurrency);
     let blockExporter = new BlockExporter(host, port, output, concurrency);
     isBlockExporterStarted = true;
     e.reply("block-exporter-status-changed", isBlockExporterStarted);
@@ -261,7 +260,6 @@ ipcMain.on(
         e.reply("block-exporter-update", { current, total, blockData });
       },
       (err) => {
-        throw err;
         e.reply("block-exporter-error", err);
       }
     );
