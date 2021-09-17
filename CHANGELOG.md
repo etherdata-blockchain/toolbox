@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.1](https://github.com/crypyto-panel/remote-config-gui/compare/v1.4.0...v1.4.1) (2021-09-17)
+
+
+### Bug Fixes
+
+* :bug: Update dependencies ([46167bc](https://github.com/crypyto-panel/remote-config-gui/commit/46167bcfc9c17671eea021977d4144ab60183195))
+
 ## [1.4.0](https://github.com/crypyto-panel/remote-config-gui/compare/v1.3.1...v1.4.0) (2021-09-17)
 
 
