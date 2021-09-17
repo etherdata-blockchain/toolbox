@@ -17,7 +17,7 @@ export function BlockExporterAction(props: Props) {
   const [savedPath, setSavedPath] = React.useState<string>();
 
   const [remoteForm] = Form.useForm();
-  const { isStarted, host, port, output, start, stop, setData, concurrency } =
+  const { isStarted, host, output, start, stop, setData, concurrency } =
     React.useContext(BlockExporterContext);
 
   const onCancelRemoteDialog = React.useCallback(() => {
@@ -26,7 +26,6 @@ export function BlockExporterAction(props: Props) {
 
   const onOkRemoteDialog = React.useCallback(async () => {
     let host = remoteForm.getFieldValue("host");
-    let port = remoteForm.getFieldValue("port");
     let concurrency = remoteForm.getFieldValue("concurrency");
 
     if (!savedPath) {
@@ -34,7 +33,7 @@ export function BlockExporterAction(props: Props) {
       return;
     }
     setShowRemote(false);
-    setData(port, host, savedPath, parseInt(concurrency));
+    setData(host, savedPath, parseInt(concurrency));
   }, [savedPath]);
 
   const onScanBtnClick = React.useCallback(() => {
@@ -43,7 +42,7 @@ export function BlockExporterAction(props: Props) {
     } else {
       start();
     }
-  }, [isStarted, host, port, output, concurrency]);
+  }, [isStarted, host, output, concurrency]);
 
   return (
     <div style={{ overflowY: "hidden" }}>
@@ -54,7 +53,6 @@ export function BlockExporterAction(props: Props) {
               setSavedPath(output);
               remoteForm.setFieldsValue({
                 host: host,
-                port: port,
                 output: output,
                 concurrency: concurrency,
               });
@@ -81,9 +79,6 @@ export function BlockExporterAction(props: Props) {
           <Form.Item name={"host"} label={"Host"}>
             <Input />
           </Form.Item>
-          <Form.Item name={"port"} label={"Port"}>
-            <Input />
-          </Form.Item>
           <Form.Item name={"concurrency"} label={"Concurrency"}>
             <Input type={"number"} />
           </Form.Item>
@@ -97,7 +92,7 @@ export function BlockExporterAction(props: Props) {
                 }
               }}
             >
-              {savedPath ?? " Pick Save path"}
+              {`Path: ${savedPath}` ?? " Pick Save path"}
             </Button>
           </Form.Item>
         </Form>

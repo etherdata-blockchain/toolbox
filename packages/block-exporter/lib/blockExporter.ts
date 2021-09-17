@@ -8,7 +8,12 @@ export class BlockExporter {
   output: string;
   concurrency: number;
 
-  constructor(base: string, port: number, output: string, concurrency: number) {
+  constructor(
+    base: string,
+    port: number | undefined,
+    output: string,
+    concurrency: number
+  ) {
     this.rpc = new Json_rpc_methods(base, port);
     this.blocks = [];
     this.output = output;

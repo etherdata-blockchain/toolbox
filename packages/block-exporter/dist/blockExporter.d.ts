@@ -5,7 +5,7 @@ export declare class BlockExporter {
     blocks: any[];
     output: string;
     concurrency: number;
-    constructor(base: string, port: number, output: string, concurrency: number);
+    constructor(base: string, port: number | undefined, output: string, concurrency: number);
     private decimalToHexString;
     private checkHelper;
     check(onChecking: (current: number, total: number, blockData: any) => void, onError: (error: any) => void): CancelablePromise<void>;

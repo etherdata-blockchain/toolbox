@@ -248,38 +248,35 @@ ipcMain.on("stop-worker-checking", (event) => {
   event.reply("checker-start-status", isWorkerCheckerStarted);
 });
 
-ipcMain.on(
-  "block_exporter_start",
-  (e, { host, port, output, concurrency }: any) => {
-    let blockExporter = new BlockExporter(host, port, output, concurrency);
-    isBlockExporterStarted = true;
-    e.reply("block-exporter-status-changed", isBlockExporterStarted);
+ipcMain.on("block_exporter_start", (e, { host, output, concurrency }: any) => {
+  let blockExporter = new BlockExporter(host, undefined, output, concurrency);
+  isBlockExporterStarted = true;
+  e.reply("block-exporter-status-changed", isBlockExporterStarted);
 
-    cancelableBlockExporterJob = blockExporter.check(
-      (current, total, blockData) => {
-        e.reply("block-exporter-update", { current, total, blockData });
-      },
-      (err) => {
-        e.reply("block-exporter-error", err);
-      }
-    );
+  cancelableBlockExporterJob = blockExporter.check(
+    (current, total, blockData) => {
+      e.reply("block-exporter-update", { current, total, blockData });
+    },
+    (err) => {
+      e.reply("block-exporter-error", err);
+    }
+  );
 
-    cancelableBlockExporterJob
-      .then(() => {
-        isBlockExporterStarted = false;
-        e.reply("block-exporter-status-changed", isBlockExporterStarted);
-        new Notification({
-          title: "Finished",
-          subtitle: "Block Exporter",
-        }).show();
-      })
-      .catch((err) => {
-        isBlockExporterStarted = false;
-        e.reply("block-exporter-status-changed", isBlockExporterStarted);
-        e.reply("block-exporter-error", err);
-      });
-  }
-);
+  cancelableBlockExporterJob
+    .then(() => {
+      isBlockExporterStarted = false;
+      e.reply("block-exporter-status-changed", isBlockExporterStarted);
+      new Notification({
+        title: "Finished",
+        subtitle: "Block Exporter",
+      }).show();
+    })
+    .catch((err) => {
+      isBlockExporterStarted = false;
+      e.reply("block-exporter-status-changed", isBlockExporterStarted);
+      e.reply("block-exporter-error", err);
+    });
+});
 
 ipcMain.on("block_exporter_stop", (e) => {
   cancelableBlockExporterJob?.cancel();

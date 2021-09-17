@@ -8,13 +8,7 @@ import { WorkerCondition, WorkerStatus } from "worker-checking";
 import { message } from "antd";
 
 interface BlockExporter {
-  setData(
-    port: string,
-    host: string,
-    output: string,
-    concurrency: number
-  ): void;
-  port: string;
+  setData(host: string, output: string, concurrency: number): void;
   host: string;
   output: string;
   current: number;
@@ -34,7 +28,6 @@ type Props = {
 export const BlockExporterContext = React.createContext<BlockExporter>({});
 
 export function BlockExporterProvider({ children }: Props) {
-  const [port, setPort] = React.useState("");
   const [host, setHost] = React.useState("");
   const [current, setCurrent] = React.useState(0);
   const [output, setOutput] = React.useState("");
@@ -45,16 +38,11 @@ export function BlockExporterProvider({ children }: Props) {
 
   React.useEffect(() => {
     let host = localStorage.getItem("block_exporter_host");
-    let port = localStorage.getItem("block_exporter_port");
     let output = localStorage.getItem("block_exporter_output");
     let concurrency = localStorage.getItem("block_exporter_concurrency");
 
     if (host) {
       setHost(host);
-    }
-
-    if (port) {
-      setPort(port);
     }
 
     if (output) {
@@ -85,36 +73,32 @@ export function BlockExporterProvider({ children }: Props) {
 
   const start = React.useCallback(() => {
     ipcRenderer.send("block_exporter_start", {
-      port,
       host,
       output,
       concurrency,
     });
-  }, [host, port, output, concurrency]);
+  }, [host, output, concurrency]);
 
   const stop = React.useCallback(() => {
     ipcRenderer.send("block_exporter_stop");
-  }, [host, port, output]);
+  }, [host, output]);
 
   const setData = React.useCallback(
-    (port: string, host: string, output: string, concurrency: number) => {
-      setPort(port);
+    (host: string, output: string, concurrency: number) => {
       setHost(host);
       setOutput(output);
       setConcurrency(concurrency);
       localStorage.setItem("block_exporter_host", host);
-      localStorage.setItem("block_exporter_port", port);
       localStorage.setItem("block_exporter_output", output);
       localStorage.setItem(
         "block_exporter_concurrency",
         concurrency.toString()
       );
     },
-    [host, port, concurrency, output]
+    [host, concurrency, output]
   );
 
   const value: BlockExporter = {
-    port,
     host,
     setData,
     total,
