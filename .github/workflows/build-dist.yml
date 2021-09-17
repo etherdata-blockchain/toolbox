@@ -27,11 +27,10 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-
       - name: Setting up Node JS and Yarn
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: "16"
 
       - name: 🔨 Installing dependencies
         run: yarn install
