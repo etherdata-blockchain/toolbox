@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/crypyto-panel/remote-config-gui/compare/v1.4.2...v1.5.0) (2021-09-23)
+
+
+### Features
+
+* Update export data structure. Now uncles come with real block data ([afaef81](https://github.com/crypyto-panel/remote-config-gui/commit/afaef819bbffe20c6008dd17e425ca3db58739ea))
+
 ### [1.4.2](https://github.com/crypyto-panel/remote-config-gui/compare/v1.4.1...v1.4.2) (2021-09-17)
 
 ### [1.4.1](https://github.com/crypyto-panel/remote-config-gui/compare/v1.4.0...v1.4.1) (2021-09-17)
