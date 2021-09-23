@@ -30,16 +30,29 @@ export class BlockExporter {
   }
 
   private async checkHelper(blockNumber: number): Promise<[any[], string]> {
-    let blockPromises = Array.from(Array(this.concurrency)).map((_, index) =>
-      this.rpc.getBlockByNumber(
-        this.decimalToHexString(index + blockNumber),
-        false
-      )
+    let blockPromises = Array.from(Array(this.concurrency)).map(
+      async (_, index) => {
+        let block = await this.rpc.getBlockByNumber(
+          this.decimalToHexString(index + blockNumber),
+          false
+        );
+
+        const unclePromises = block.uncles.map((u, i) =>
+          this.rpc.getUncleByBlockHashAndIndex(
+            block.hash,
+            this.decimalToHexString(i)
+          )
+        );
+
+        let result = await Promise.all(unclePromises);
+        //@ts-ignore
+        block.uncles = result;
+        return block;
+      }
     );
 
     let blocks = await Promise.all(blockPromises);
     blocks = blocks.sort((a, b) => parseInt(a.number) - parseInt(b.number));
-
     let blockString = "";
     let index = 0;
     for (let b of blocks) {
@@ -74,6 +87,7 @@ export class BlockExporter {
             writeStream.write(",");
           }
           let [blocks, blockString] = await this.checkHelper(number);
+
           writeStream.write(blockString);
           onChecking(number + this.concurrency, blockNumber, blocks);
           number += this.concurrency;

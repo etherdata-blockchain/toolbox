@@ -9,10 +9,10 @@ Object.defineProperty(exports, "BlockExporter", { enumerable: true, get: functio
 //     "https://debug.etdchain.net/hdkEtd@Themoon",
 //     undefined,
 //     "./out.json",
-//     2
+//     1
 //   );
 //   await blockExporter.check(
-//     (current, total) => {
+//     (current, total, blockData) => {
 //       console.log(current + "/" + total);
 //     },
 //     (err) => {

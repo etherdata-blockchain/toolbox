@@ -64,9 +64,26 @@ var BlockExporter = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        blockPromises = Array.from(Array(this.concurrency)).map(function (_, index) {
-                            return _this.rpc.getBlockByNumber(_this.decimalToHexString(index + blockNumber), false);
-                        });
+                        blockPromises = Array.from(Array(this.concurrency)).map(function (_, index) { return __awaiter(_this, void 0, void 0, function () {
+                            var block, unclePromises, result;
+                            var _this = this;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0: return [4 /*yield*/, this.rpc.getBlockByNumber(this.decimalToHexString(index + blockNumber), false)];
+                                    case 1:
+                                        block = _a.sent();
+                                        unclePromises = block.uncles.map(function (u, i) {
+                                            return _this.rpc.getUncleByBlockHashAndIndex(block.hash, _this.decimalToHexString(i));
+                                        });
+                                        return [4 /*yield*/, Promise.all(unclePromises)];
+                                    case 2:
+                                        result = _a.sent();
+                                        //@ts-ignore
+                                        block.uncles = result;
+                                        return [2 /*return*/, block];
+                                }
+                            });
+                        }); });
                         return [4 /*yield*/, Promise.all(blockPromises)];
                     case 1:
                         blocks = _a.sent();
