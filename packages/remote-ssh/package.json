@@ -25,7 +25,7 @@
     "yaml": "^1.10.2"
   },
   "scripts": {
-    "start": "ts-node lib/index.ts test.yml",
+    "start": "ts-node lib/example.ts",
     "dev": "ts-node-dev --respawn --transpile-only lib/index.ts",
     "test": "jest",
     "build": "tsc"
