@@ -8,18 +8,40 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [14.x]
-
     steps:
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
+          cache: yarn
       - run: yarn
       - run: yarn test
+
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ (github.event.head_commit.author.name != 'github action') && (github.ref == 'refs/heads/main') }}
+    needs: [ build ]
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+          cache: 'yarn'
+      - run: yarn install
+        name: Installing dependencies
+      - name: Setup git identity
+        run: |
+          git config --global user.email "github-action.github.com"
+          git config --global user.name "github action"
+      - name: Pre-release
+        run: yarn release --ci
+        env:
+          GITHUB_TOKEN: ${{secrets.RELEASE_TOKEN}}
