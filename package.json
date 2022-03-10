@@ -12,7 +12,7 @@
     "build:win64": "nextron build --win --x64",
     "postinstall": "electron-builder install-app-deps",
     "upload": "electron-builder --publish always",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "release": "release-it --no-requireCleanWorkingDir"
   },
   "dependencies": {
