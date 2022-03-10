@@ -7,7 +7,6 @@ node_modules
 .vscode
 .idea
 .DS_Store
-yarn.lock
 configs
 remote-ssh
 !packages/remote-ssh
