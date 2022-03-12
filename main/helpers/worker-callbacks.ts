@@ -1,4 +1,4 @@
-import { WorkerStatus } from "remote-ssh";
+import { WorkerStatus } from "@etherdata-blockchain/remote-action";
 
 export function onWorkerError(
   index: number,

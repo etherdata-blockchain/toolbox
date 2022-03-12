@@ -1,7 +1,7 @@
 {
   "private": false,
-  "name": "remote-config",
-  "description": "GUI Application for remote-config",
+  "name": "toolbox",
+  "description": "ETD Toolbox",
   "repository": "https://github.com/crypyto-panel/remote-config-gui.git",
   "version": "1.6.0",
   "author": "sirily11 <sirily1997@gmail.com>",
@@ -17,22 +17,31 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
-    "@electron/remote": "^2.0.7",
+    "@chakra-ui/icons": "^1.1.7",
+    "@chakra-ui/react": "^1.7",
+    "@emotion/react": "^11",
+    "@emotion/styled": "^11",
+    "@etherdata-blockchain/block-exporter": "^1.17.10",
+    "@etherdata-blockchain/remote-action": "^1.17.10",
+    "@etherdata-blockchain/worker-checker": "^1.17.10",
+    "@rjsf/chakra-ui": "^4.0.1",
+    "@rjsf/core": "^4.0.1",
     "@types/pouchdb": "^6.4.0",
     "@zeit/next-css": "^1.0.1",
     "antd": "^4.19.1",
-    "@etherdata-blockchain/block-exporter": "^1.17.3",
     "cancelable-promise": "^4.2.1",
     "electron-serve": "^1.1.0",
     "electron-store": "^8.0.1",
     "etd-react-ui": "^2.0.1",
+    "framer-motion": "^5",
+    "json-schema": "^0.4.0",
     "pouchdb": "^7.2.2",
     "prettier": "^2.5.1",
-    "react-json-view": "^1.21.3",
-    "@etherdata-blockchain/remote-action": "^1.17.3",
-    "@etherdata-blockchain/worker-checker": "^1.17.3"
+    "react-bootstrap": "^2.2.0",
+    "react-json-view": "^1.21.3"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^4.2.1",
     "@types/node": "^17.0.21",
     "@types/react": "^17.0.39",
     "@types/react-dom": "^17.0.13",
@@ -43,8 +52,7 @@
     "nextron": "^7.2.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "typescript": "^4.6.2",
     "release-it": "^14.12.5",
-    "@release-it/conventional-changelog": "^4.2.1"
+    "typescript": "^4.6.2"
   }
 }

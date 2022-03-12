@@ -7,19 +7,18 @@ import {
   Empty,
   Row,
   Spin,
-  Steps,
   Tooltip,
   Typography,
 } from "antd";
-import { WorkerStatus } from "remote-ssh/lib/config";
+
 import { RemoteSshContext } from "../../../models/remoteSSH";
-import { Status } from "rc-steps/lib/interface";
 import {
   CheckCircleOutlined,
   ExclamationCircleOutlined,
   LoadingOutlined,
   SmallDashOutlined,
 } from "@ant-design/icons";
+import { config } from "@etherdata-blockchain/remote-action";
 
 type Props = {};
 
@@ -31,7 +30,7 @@ export function WorkerDetail(props: Props) {
    * Will render error icon, progress bar or nothing based on the worker connection status
    */
   const getConnectionStatus = React.useCallback(
-    (worker: WorkerStatus): JSX.Element | undefined => {
+    (worker: config.WorkerStatus): JSX.Element | undefined => {
       if (worker.currentProgress === -1) {
         if (worker.errorStopped) {
           return (
@@ -50,7 +49,7 @@ export function WorkerDetail(props: Props) {
   );
 
   const getStatus = React.useCallback(
-    (w: WorkerStatus, index: number): JSX.Element => {
+    (w: config.WorkerStatus, index: number): JSX.Element => {
       let error = w.errors.find((e) => e.progress === index);
       if (error) {
         return <ExclamationCircleOutlined style={{ color: "red" }} />;

@@ -2,15 +2,16 @@
 import * as React from "react";
 import { useRouter } from "next/router";
 import {
+  Button,
   Col,
   Collapse,
   Descriptions,
   Empty,
-  message,
   Row,
   Typography,
 } from "antd";
 import { RemoteSshContext } from "../../../models/remoteSSH";
+import { EditOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 const { watchFile, readFileSync } = require("fs");
@@ -40,19 +41,32 @@ export default function ConfigDetails(props: Props) {
     };
   }, [router.pathname]);
 
+  const toEditPage = React.useCallback(async () => {
+    await router.push(`/remote_ssh/edit/${router.query.id}`);
+  }, [router]);
+
   if (config === undefined) {
     return <Empty />;
   }
 
   return (
     <div>
-      <Title level={5}>{savedConfig.name} </Title>
-      <Typography>{savedConfig.filePath}</Typography>
-      <Descriptions>
-        <Descriptions.Item label={"Concurrency"}>
-          {config?.concurrency ?? "Undefined"}
-        </Descriptions.Item>
-      </Descriptions>
+      <Row>
+        <Col span={22}>
+          <Title level={5}>{savedConfig.name} </Title>
+          <Typography>{savedConfig.filePath}</Typography>
+          <Descriptions>
+            <Descriptions.Item label={"Concurrency"}>
+              {config?.concurrency ?? "Undefined"}
+            </Descriptions.Item>
+          </Descriptions>
+        </Col>
+        <Col span={2}>
+          <Button shape={"circle"} onClick={async () => await toEditPage()}>
+            <EditOutlined />
+          </Button>
+        </Col>
+      </Row>
       <Row style={{ height: "100%" }} gutter={[10, 0]}>
         <Col span={24}>
           <Collapse

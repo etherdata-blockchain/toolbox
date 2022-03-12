@@ -1,6 +1,6 @@
-import { BasePlugin, Web3Plugin } from "worker-checking/dist/plugin";
+import { Web3Plugin } from "@etherdata-blockchain/worker-checker";
 
-export function getPluginsByName(pluginNames: string[]): BasePlugin[] {
+export function getPluginsByName(pluginNames: string[]): any[] {
   //TODO: Add real mapping function
   return [new Web3Plugin()];
 }
