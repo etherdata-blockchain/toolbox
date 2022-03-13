@@ -1,12 +1,13 @@
 // @flow
 import * as React from "react";
 import PouchDB from "pouchdb";
-import { ConfigParser, Config, WorkerStatus } from "remote-ssh";
+import { Config, WorkerStatus } from "@etherdata-blockchain/remote-action";
 import { SavedConfiguration } from "../component/remote_ssh/interface";
 import YAML from "yaml";
 import { message } from "antd";
-import { database_names } from "../../configurations/database_names";
-import { ipcRenderer } from "electron";
+import { DBNames } from "../lib/configurations";
+import { RemoteAction } from "../lib/remote_action";
+import * as fs from "fs";
 
 interface RemoteSshInterface {
   /**
@@ -18,23 +19,38 @@ interface RemoteSshInterface {
    */
   config: Config;
   workingConfig: Config;
-  loadSavedConfig(id: string): Promise<SavedConfiguration>;
-  updateConfig(content: string): Promise<void>;
-  updateWorkingConfig(config: Config): void;
   isRunning: boolean;
   workers: WorkerStatus[];
   env: { [key: string]: string };
+
+  /**
+   * Update environments
+   * @param env
+   */
   updateEnv(env: { [key: string]: string }): void;
+
+  /**
+   * Load saved configuration from DB
+   * @param id
+   */
+  loadSavedConfig(id: string): Promise<SavedConfiguration>;
+
+  updateConfig(content: string): Promise<void>;
+
+  /**
+   * Update worker's configuration
+   * @param config
+   */
+  updateWorkingConfig(config: Config): void;
 }
 
 type Props = {
   children: any;
 };
 
+export let db = new PouchDB<SavedConfiguration>(DBNames.remoteSSH);
 //@ts-ignore
 export const RemoteSshContext = React.createContext<RemoteSshInterface>({});
-
-const db = new PouchDB<SavedConfiguration>(database_names.remoteSSH);
 
 export function RemoteSshProvider(props: Props) {
   const { children } = props;
@@ -46,19 +62,19 @@ export function RemoteSshProvider(props: Props) {
   const [workingConfig, updateWorkingConfig] = React.useState<Config>();
 
   React.useEffect(() => {
-    ipcRenderer.on("error", async (event, reason) => {
+    RemoteAction.onError(async (reason) => {
       await message.error(reason.toString());
     });
 
-    ipcRenderer.on("status", async (event, newStatus) => {
-      setIsRunning(newStatus);
+    RemoteAction.onStatus((status) => {
+      setIsRunning(status);
     });
 
-    ipcRenderer.on("update", async (event, newWorkers) => {
-      setWorkers(newWorkers);
+    RemoteAction.onUpdate((workers) => {
+      setWorkers(workers);
     });
 
-    ipcRenderer.on("finish", async (event) => {
+    RemoteAction.onFinish(() => {
       setIsRunning(false);
     });
   }, []);
@@ -76,8 +92,11 @@ export function RemoteSshProvider(props: Props) {
 
   const loadSavedConfig = React.useCallback(async (id: string) => {
     let doc = await db.get(id);
+    if (!fs.existsSync(doc.filePath)) {
+      message.error("File not found");
+      throw new Error("File not found");
+    }
     setConfig(undefined);
-    setSavedConfig(undefined);
     setSavedConfig(doc);
     setEnv(doc.env);
     return doc;
@@ -87,6 +106,19 @@ export function RemoteSshProvider(props: Props) {
     try {
       message.destroy();
       message.info("Found changes, re-parsing...");
+      if (content.length === 0) {
+        setConfig({
+          concurrency: 0,
+          logger: undefined,
+          login: undefined,
+          name: "",
+          output: false,
+          remote: [],
+          start_from: 0,
+          steps: [],
+        });
+        return;
+      }
       setConfig(YAML.parse(content));
     } catch (err) {
       await message.error("Configuration file contains error");

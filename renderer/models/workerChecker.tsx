@@ -2,10 +2,13 @@
 import * as React from "react";
 import PouchDB from "pouchdb";
 import { SavedConfiguration } from "../component/remote_ssh/interface";
-import { database_names } from "../../configurations/database_names";
 import { ipcRenderer } from "electron";
-import { WorkerCondition, WorkerStatus } from "worker-checking";
+import {
+  WorkerCondition,
+  WorkerStatus,
+} from "@etherdata-blockchain/worker-checker";
 import { message } from "antd";
+import { DBNames } from "../lib/configurations";
 
 interface WorkerChecker {
   progress: number;
@@ -30,7 +33,7 @@ type Props = {
 //@ts-ignore
 export const WorkerCheckerContext = React.createContext<WorkerChecker>({});
 
-const db = new PouchDB<SavedConfiguration>(database_names.remoteSSH);
+const db = new PouchDB<SavedConfiguration>(DBNames.remoteSSH);
 
 export function WorkerCheckerProvider({ children }: Props) {
   const [remotes, setRemotes] = React.useState<string[]>([]);

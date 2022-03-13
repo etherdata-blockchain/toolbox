@@ -5,10 +5,9 @@ import {
   BorderOutlined,
   CaretRightOutlined,
   DesktopOutlined,
-  RadarChartOutlined,
 } from "@ant-design/icons";
-import { WorkerCheckerContext } from "../../models/workerChecker";
 import { BlockExporterContext } from "../../models/blockExporter";
+import { ElectronDialog } from "../../lib/electron_dialog";
 
 type Props = {};
 
@@ -85,8 +84,7 @@ export function BlockExporterAction(props: Props) {
           <Form.Item name={"output"} label={"Output"}>
             <Button
               onClick={async () => {
-                const { dialog } = require("electron").remote;
-                let result = await dialog.showSaveDialog({});
+                let result = await ElectronDialog.showSaveDialog({});
                 if (!result.canceled) {
                   setSavedPath(result.filePath);
                 }

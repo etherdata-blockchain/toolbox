@@ -5,7 +5,7 @@ import {
 } from "electron";
 import Store from "electron-store";
 
-const isWin = process.platform === "win32"
+const isWin = process.platform === "win32";
 
 export default (
   windowName: string,
@@ -77,7 +77,6 @@ export default (
     ...state,
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true,
       contextIsolation: false,
       webSecurity: false,
       ...options.webPreferences,

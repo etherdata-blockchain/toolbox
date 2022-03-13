@@ -1,16 +1,16 @@
 // @flow
 import * as React from "react";
-import {Button, Card, Col, List, message, Row, Typography} from "antd";
+import { Button, Card, Col, List, message, Row, Typography } from "antd";
 import PouchDB from "pouchdb";
-import { database_names } from "../../../configurations/database_names";
 import Link from "next/link";
 import { SavedConfiguration } from "../../component/remote_ssh/interface";
+import { DBNames } from "../../lib/configurations";
 
 const { Title } = Typography;
 
 type Props = {};
 
-const db = new PouchDB<SavedConfiguration>(database_names.remoteSSH);
+const db = new PouchDB<SavedConfiguration>(DBNames.remoteSSH);
 export default function Index({}: Props) {
   const [configs, setConfigs] = React.useState<SavedConfiguration[]>([]);
   React.useEffect(() => {
@@ -26,12 +26,12 @@ export default function Index({}: Props) {
 
   const deleteDocument = React.useCallback(async (doc: any) => {
     try {
-      let confirm = await window.confirm("Delete this document?");
+      let confirm = window.confirm("Delete this document?");
       if (confirm) {
         await db.remove(doc);
       }
     } catch (err) {
-      message.error(err.toString())
+      message.error(err.toString());
     }
   }, []);
 

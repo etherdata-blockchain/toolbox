@@ -18,12 +18,15 @@ import {
   PlusOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { database_names } from "../../../../configurations/database_names";
+
 import PouchDB from "pouchdb";
 import { useRouter } from "next/router";
 import { RemoteSshContext } from "../../../models/remoteSSH";
-import electron, { ipcRenderer } from "electron";
-import { useForm } from "antd/lib/form/Form";
+import { ipcRenderer } from "electron";
+import { DBNames } from "../../../lib/configurations";
+import { ElectronDialog } from "../../../lib/electron_dialog";
+import { ElectronChannels } from "../../../../shared/event_names";
+import { RemoteAction } from "../../../lib/remote_action";
 
 type Props = {};
 
@@ -42,7 +45,6 @@ export function RemoteActions(props: Props) {
     updateWorkingConfig,
     config,
   } = React.useContext(RemoteSshContext);
-  const remote = electron.remote || false;
 
   const initEnvs = env
     ? Object.entries(env).map(([key, value]) => {
@@ -64,23 +66,21 @@ export function RemoteActions(props: Props) {
   /// The displayed configuration in Running worker tab will not change
   const run = React.useCallback(() => {
     if (isRunning) {
-      ipcRenderer.send("stop");
+      RemoteAction.stop();
     } else {
       updateWorkingConfig(config);
-      ipcRenderer.send("start", savedConfig.filePath, env);
+      RemoteAction.start(savedConfig.filePath, env);
     }
   }, [savedConfig, isRunning, env, config]);
 
   const pickFile = React.useCallback(async () => {
-    if (remote) {
-      let result = await remote.dialog.showOpenDialog({
-        filters: [{ name: "Yaml", extensions: ["yml", "yaml", "YML", "YAML"] }],
-      });
-      if (!result.canceled) {
-        setFilePath(result.filePaths[0]);
-      }
+    let result = await ElectronDialog.showOpenDialog({
+      filters: [{ name: "Yaml", extensions: ["yml", "yaml", "YML", "YAML"] }],
+    });
+    if (!result.canceled) {
+      setFilePath(result.filePaths[0]);
     }
-  }, [remote]);
+  }, []);
 
   const onEnvChanged = React.useCallback(async (values: any[]) => {
     let filteredValues = values
@@ -93,6 +93,44 @@ export function RemoteActions(props: Props) {
       env[v.key] = v.value;
     }
     await updateEnv(env);
+  }, []);
+
+  /**
+   * On new open new configuration file
+   */
+  const onCreateNewEntry = React.useCallback(async () => {
+    let savedFilePath = filePath;
+    let values = form.getFieldsValue();
+    if (filePath.length === 0) {
+      const result = await ElectronDialog.showSaveDialog({
+        filters: [{ extensions: [".yaml"], name: ".yaml" }],
+      });
+      if (result.canceled) {
+        await ElectronDialog.showMessageBox({
+          message: "No saved file provided",
+          type: "info",
+        });
+        return;
+      }
+      savedFilePath = result.filePath;
+    }
+    let db = new PouchDB(DBNames.remoteSSH);
+    let data = {
+      ...values,
+      filePath: savedFilePath,
+    };
+    try {
+      await db.post(data);
+      /// Clear filepath and form field
+      form.resetFields();
+      setFilePath("");
+      setShowAdd(false);
+    } catch (err) {
+      await ElectronDialog.showMessageBox({
+        type: "error",
+        message: err.toString(),
+      });
+    }
   }, []);
 
   return (
@@ -144,19 +182,19 @@ export function RemoteActions(props: Props) {
           <Form.List name={"env"}>
             {(fields, { add, remove }) => (
               <>
-                {fields.map(({ key, name, fieldKey, ...restField }, index) => (
+                {fields.map(({ key, name, ...restField }, index) => (
                   <Space>
                     <Form.Item
                       {...restField}
                       name={[name, "key"]}
-                      fieldKey={[fieldKey, "key"]}
+                      fieldKey={[key, "key"]}
                     >
                       <Input placeholder={"key"} />
                     </Form.Item>
                     <Form.Item
                       {...restField}
                       name={[name, "value"]}
-                      fieldKey={[fieldKey, "value"]}
+                      fieldKey={[key, "value"]}
                     >
                       <Input placeholder={"value"} />
                     </Form.Item>
@@ -182,40 +220,13 @@ export function RemoteActions(props: Props) {
       <Modal
         title={"Add New Config"}
         visible={showAdd}
-        onOk={async () => {
-          let values = form.getFieldsValue();
-          if (filePath.length === 0) {
-            const { dialog } = require("electron").remote;
-            await dialog.showMessageBox({
-              message: "You need to set your configuration file",
-              type: "error",
-            });
-          }
-          let db = new PouchDB(database_names.remoteSSH);
-          let data = {
-            ...values,
-            filePath: filePath,
-          };
-          try {
-            await db.post(data);
-            /// Clear filepath and form field
-            form.resetFields();
-            setFilePath("");
-            setShowAdd(false);
-          } catch (err) {
-            const { dialog } = require("electron").remote;
-            await dialog.showMessageBox({
-              type: "error",
-              message: err.toString(),
-            });
-          }
-        }}
+        onOk={async () => await onCreateNewEntry()}
         onCancel={() => {
           setShowAdd(false);
         }}
       >
         <Form form={form}>
-          <Form.Item label={"Configuration Name"} name={"name"}>
+          <Form.Item label={"Configuration Name"} name={"name"} required={true}>
             <Input />
           </Form.Item>
           <Form.Item label={"File Path"} name={"filePath"}>
