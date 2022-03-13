@@ -9,6 +9,7 @@
     "node_modules"
   ],
   "compilerOptions": {
-    "incremental": true
+    "incremental": true,
+    "jsx": "preserve"
   }
 }

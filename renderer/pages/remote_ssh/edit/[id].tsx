@@ -23,14 +23,19 @@ function Index(props: Props) {
   const { loadSavedConfig, config, savedConfig, updateConfig } =
     React.useContext(RemoteSshContext);
   const [outputPath, setOutputPath] = React.useState<string>();
+  const [hasError, setHasError] = React.useState(false);
 
   React.useEffect(() => {
     let id: string = router.query.id as string;
-    loadSavedConfig(id).then(async (doc) => {
-      setOutputPath(doc.filePath);
-      let file = readFileSync(doc.filePath, "utf-8");
-      await updateConfig(file);
-    });
+    loadSavedConfig(id)
+      .then(async (doc) => {
+        setOutputPath(doc.filePath);
+        let file = readFileSync(doc.filePath, "utf-8");
+        await updateConfig(file);
+      })
+      .catch((err) => {
+        setHasError(true);
+      });
   }, [router.pathname]);
 
   const jsonSchema = React.useMemo<JSONSchema7>(
@@ -54,11 +59,15 @@ function Index(props: Props) {
   );
 
   if (config === undefined) {
-    return <div>Loading...</div>;
+    return (
+      <div data-testid="loading">
+        {hasError ? "Something went wrong" : "Loading..."}
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div data-testid="container">
       <Tooltip title={"Back"}>
         <LeftOutlined
           style={{ fontSize: 30 }}

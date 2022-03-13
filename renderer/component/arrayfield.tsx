@@ -23,7 +23,7 @@ export function ArrayField(props: ArrayFieldTemplateProps) {
       />
       <Box key={`array-item-list-${props.idSchema.$id}`}>
         {props.items.map((ele, index) => (
-          <Box borderWidth="1px" borderRadius="lg" p={5} mb={5}>
+          <Box borderWidth="1px" borderRadius="lg" p={5} mb={5} key={ele.key}>
             <Heading as={"h6"} size={"sm"}>
               # {ele.index + 1}
             </Heading>

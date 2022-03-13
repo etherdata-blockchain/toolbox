@@ -5,12 +5,9 @@ import { Config, WorkerStatus } from "@etherdata-blockchain/remote-action";
 import { SavedConfiguration } from "../component/remote_ssh/interface";
 import YAML from "yaml";
 import { message } from "antd";
-
-import { ipcRenderer } from "electron";
 import { DBNames } from "../lib/configurations";
-import { RemoteActionEvents } from "../../shared/event_names";
 import { RemoteAction } from "../lib/remote_action";
-import Remote from "@etherdata-blockchain/remote-action/dist/remote";
+import * as fs from "fs";
 
 interface RemoteSshInterface {
   /**
@@ -25,6 +22,7 @@ interface RemoteSshInterface {
   isRunning: boolean;
   workers: WorkerStatus[];
   env: { [key: string]: string };
+
   /**
    * Update environments
    * @param env
@@ -36,6 +34,7 @@ interface RemoteSshInterface {
    * @param id
    */
   loadSavedConfig(id: string): Promise<SavedConfiguration>;
+
   updateConfig(content: string): Promise<void>;
 
   /**
@@ -49,10 +48,9 @@ type Props = {
   children: any;
 };
 
+export let db = new PouchDB<SavedConfiguration>(DBNames.remoteSSH);
 //@ts-ignore
 export const RemoteSshContext = React.createContext<RemoteSshInterface>({});
-
-const db = new PouchDB<SavedConfiguration>(DBNames.remoteSSH);
 
 export function RemoteSshProvider(props: Props) {
   const { children } = props;
@@ -94,8 +92,11 @@ export function RemoteSshProvider(props: Props) {
 
   const loadSavedConfig = React.useCallback(async (id: string) => {
     let doc = await db.get(id);
+    if (!fs.existsSync(doc.filePath)) {
+      message.error("File not found");
+      throw new Error("File not found");
+    }
     setConfig(undefined);
-    setSavedConfig(undefined);
     setSavedConfig(doc);
     setEnv(doc.env);
     return doc;
