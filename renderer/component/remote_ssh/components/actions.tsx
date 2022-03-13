@@ -22,10 +22,8 @@ import {
 import PouchDB from "pouchdb";
 import { useRouter } from "next/router";
 import { RemoteSshContext } from "../../../models/remoteSSH";
-import { ipcRenderer } from "electron";
 import { DBNames } from "../../../lib/configurations";
 import { ElectronDialog } from "../../../lib/electron_dialog";
-import { ElectronChannels } from "../../../../shared/event_names";
 import { RemoteAction } from "../../../lib/remote_action";
 
 type Props = {};

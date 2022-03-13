@@ -1755,10 +1755,10 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@etherdata-blockchain/block-exporter@^1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/block-exporter/-/block-exporter-1.18.0.tgz#443a4fe9fa97fa80e93decc2db0de5df669aba55"
-  integrity sha512-17hL/IANMfpoNudmRKTi1cZa/G+Ppkfu6lD+kX8u135ot1m8zxaHIeRQPNP/RBcdh9MSqj157T6J8bYhBxg4kA==
+"@etherdata-blockchain/block-exporter@^1.18.1":
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/block-exporter/-/block-exporter-1.18.1.tgz#542b34fcdc25c0ac93c5ab035b2bba28a80c24bf"
+  integrity sha512-iaUk9OpGx+EP68+GooqK/WNZ7PDKuRRhLPRVTPiJvmPMoVSzikqn2C4k1XT6RxHdaa9WYrEXmTR+QD6S3nsk1A==
   dependencies:
     "@types/jest" "^26.0.24"
     "@types/node" "^16.3.2"
@@ -1769,20 +1769,20 @@
     moment "^2.29.1"
     ts-jest "^27.0.3"
 
-"@etherdata-blockchain/logger@^1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-1.18.0.tgz#3f99408f24e2d9bbc4003c05c248aada208c9def"
-  integrity sha512-xCIbFwX4oOUavHb/xD/kHLBrLRjYoszHmCEm5v/jBz6Mdg1qxQwEYP0Z2xCpLGdjALQUeFViO81i0dDyVEmgGA==
+"@etherdata-blockchain/logger@^1.18.1":
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/logger/-/logger-1.18.1.tgz#7d4e2d55057cf91fd2c3b1fa8f00dd343932e34f"
+  integrity sha512-ziJE3LnbWOia1Wv2EaudIKEQRH4D71PpaijXrCoLSC3k0YdOJTI/NHe/PUSZEFkRvokPiSVEGlJ7mf47FBLtrQ==
   dependencies:
     chalk "^5.0.0"
     typescript "^4.5.4"
 
-"@etherdata-blockchain/remote-action@^1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/remote-action/-/remote-action-1.18.0.tgz#369522ec3e7c62179fd6d7a1402ffe6eb98e3200"
-  integrity sha512-uTb99Kvffs0jSz/EPM/2FXw1NfvS0Gf3Fsbq6PMARM6DY0aVqHu9qDeSOK3v6EzocR4c3CBVqfy7hjJOOjYkpw==
+"@etherdata-blockchain/remote-action@^1.18.1":
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/remote-action/-/remote-action-1.18.1.tgz#aa69256481db4a7ded8c79fd536f06af5f2ae637"
+  integrity sha512-7XBiyw9MHvW03VYtflTYNWJUX/i8RjQ6qDOKlygUy1N0Gp4Fdq6Q8TFLBy12qu3g73ZSHI6SiK9esLCjE6ciMg==
   dependencies:
-    "@etherdata-blockchain/logger" "^1.18.0"
+    "@etherdata-blockchain/logger" "^1.18.1"
     "@types/chalk" "^2.2.0"
     "@types/cli-progress" "^3.9.2"
     "@types/jest" "^26.0.24"
@@ -1795,12 +1795,12 @@
     node-ssh "^12.0.0"
     yaml "^1.10.2"
 
-"@etherdata-blockchain/worker-checker@^1.18.0":
-  version "1.18.0"
-  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/worker-checker/-/worker-checker-1.18.0.tgz#3eac57b166ae4cf19c49b3647b19fac6b2999750"
-  integrity sha512-Yz2Ub48NX/NTs0yt/fgHXGt6v/i1wPhSbsOYdeKF8R8l5phtpC12yLdqiRF9CYNMLWxRXJAqC5PMbDor9Gtj+Q==
+"@etherdata-blockchain/worker-checker@^1.18.1":
+  version "1.18.1"
+  resolved "https://registry.yarnpkg.com/@etherdata-blockchain/worker-checker/-/worker-checker-1.18.1.tgz#9bf5fa734abee74be2b2b2493bf852d2fdf61556"
+  integrity sha512-TqdKoHz2N45YduXfy4+kQRgrn8a1iFeTU9psCJ38M75IV/Xt9pNP7SMO599qfhFo8ag+D/tCXPCF8pchK1WHJQ==
   dependencies:
-    "@etherdata-blockchain/logger" "^1.18.0"
+    "@etherdata-blockchain/logger" "^1.18.1"
     "@types/jest" "^26.0.24"
     "@types/node" "^16.3.2"
     cancelable-promise "^4.2.1"

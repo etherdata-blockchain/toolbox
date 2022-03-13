@@ -1,6 +1,6 @@
 // @flow
 import * as React from "react";
-import { Button, Card, Col, List, message, Row, Typography } from "antd";
+import { Button, List, message, Typography } from "antd";
 import PouchDB from "pouchdb";
 import Link from "next/link";
 import { SavedConfiguration } from "../../component/remote_ssh/interface";

@@ -2,12 +2,12 @@
 import * as React from "react";
 import {
   Admin,
-  Miner,
-  Etd,
   Clique,
   Debug,
+  Etd,
   Json_rpc,
   Json_rpc_methods,
+  Miner,
   Personal,
   Real_time,
   Txpool,

@@ -1,8 +1,10 @@
 // @flow
 import * as React from "react";
-import { Col, Divider, Input, Row, Select, Typography } from "antd";
-import { Web3PluginAcceptType } from "worker-checking";
-import { Comparison } from "worker-checking/dist/interfaces";
+import { Col, Input, Row, Select } from "antd";
+import {
+  Web3PluginAcceptType,
+  Comparison,
+} from "@etherdata-blockchain/worker-checker";
 import { WorkerCheckerContext } from "../../models/workerChecker";
 
 type Props = {};
