@@ -2,7 +2,7 @@
 import * as React from "react";
 import { useRouter } from "next/router";
 import { RemoteSshContext } from "../../../models/remoteSSH";
-import { message, Tooltip, Typography } from "antd";
+import { message, Tooltip } from "antd";
 import { readFileSync, writeFileSync } from "fs";
 import { schema } from "@etherdata-blockchain/remote-action";
 import Form from "@rjsf/chakra-ui";
@@ -71,6 +71,7 @@ function Index(props: Props) {
         schema={jsonSchema}
         formData={config}
         onSubmit={async (data) => await onSave(data)}
+        ArrayFieldTemplate={ArrayField}
       />
     </div>
   );

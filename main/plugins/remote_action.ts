@@ -139,7 +139,7 @@ ipcMain.on(
 ipcMain.on(ElectronChannels.stopRemoteAction, (event) => {
   Logger.info("Stopped");
   new Notification({ title: "Workers stopped" }).show();
-  cancelableRemoteJob.cancel();
+  cancelableRemoteJob?.cancel();
   isRemoteSSHStarted = !cancelableRemoteJob.isCanceled();
   event.reply(RemoteActionEvents.onRemoteActionStatus, isRemoteSSHStarted);
 });

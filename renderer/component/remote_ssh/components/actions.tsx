@@ -26,6 +26,7 @@ import { ipcRenderer } from "electron";
 import { DBNames } from "../../../lib/configurations";
 import { ElectronDialog } from "../../../lib/electron_dialog";
 import { ElectronChannels } from "../../../../shared/event_names";
+import { RemoteAction } from "../../../lib/remote_action";
 
 type Props = {};
 
@@ -65,14 +66,10 @@ export function RemoteActions(props: Props) {
   /// The displayed configuration in Running worker tab will not change
   const run = React.useCallback(() => {
     if (isRunning) {
-      ipcRenderer.send(ElectronChannels.startRemoteAction);
+      RemoteAction.stop();
     } else {
       updateWorkingConfig(config);
-      ipcRenderer.send(
-        ElectronChannels.stopRemoteAction,
-        savedConfig.filePath,
-        env
-      );
+      RemoteAction.start(savedConfig.filePath, env);
     }
   }, [savedConfig, isRunning, env, config]);
 

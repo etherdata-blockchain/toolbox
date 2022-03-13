@@ -1,18 +1,19 @@
 import { ipcRenderer } from "electron";
 import { ElectronChannels, RemoteActionEvents } from "../../shared/event_names";
-import { message } from "antd";
-import any = jasmine.any;
-import { WorkerStatus, Result } from "@etherdata-blockchain/remote-action";
+import { Result, WorkerStatus } from "@etherdata-blockchain/remote-action";
 
 export class RemoteAction {
-  static start() {}
-
-  stop() {
+  static stop() {
     ipcRenderer.send(ElectronChannels.stopRemoteAction);
   }
 
-  onStart() {
-    ipcRenderer.send(ElectronChannels.startRemoteAction);
+  /**
+   * Start running remote action
+   * @param configFilePath Configuration file path
+   * @param envs Environments variables
+   */
+  static start(configFilePath: string, envs: { [key: string]: string }) {
+    ipcRenderer.send(ElectronChannels.startRemoteAction, configFilePath, envs);
   }
 
   static onFinish(fn: (results: Result[][]) => void) {
