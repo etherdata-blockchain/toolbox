@@ -23,8 +23,5 @@
     "renderer/next.config.js",
     "app",
     "dist"
-  ],
-  "include": [
-    "./shared/**/*.ts"
   ]
 }

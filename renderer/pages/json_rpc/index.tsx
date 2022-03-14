@@ -11,7 +11,7 @@ import {
   Personal,
   Real_time,
   Txpool,
-} from "etd-react-ui";
+} from "etherdata-react-ui";
 import { Tabs } from "antd";
 import { JsonRpcContext } from "../../models/jsonRpc";
 
