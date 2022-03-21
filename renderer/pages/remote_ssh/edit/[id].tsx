@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import { RemoteSshContext } from "../../../models/remoteSSH";
 import { message, Tooltip } from "antd";
 import { readFileSync, writeFileSync } from "fs";
-import { schema } from "@etherdata-blockchain/remote-action";
+import { config as RemoteActionConfig } from "@etherdata-blockchain/remote-action/dist/schemas";
 import Form from "@rjsf/chakra-ui";
 import { JSONSchema7 } from "json-schema";
 import YAML from "yaml";
 import { LeftOutlined } from "@ant-design/icons";
 import { ArrayField } from "../../../component/arrayfield";
+import { ChakraProvider } from "@chakra-ui/react";
 
 type Props = {};
 
@@ -41,8 +42,8 @@ function Index(props: Props) {
   const jsonSchema = React.useMemo<JSONSchema7>(
     () => ({
       title: "Create a config file",
-      definitions: schema.config.definitions as any,
-      properties: schema.config.definitions.Config.properties as any,
+      definitions: RemoteActionConfig.definitions as any,
+      properties: RemoteActionConfig.definitions.Config.properties as any,
     }),
     []
   );
@@ -67,22 +68,24 @@ function Index(props: Props) {
   }
 
   return (
-    <div data-testid="container">
-      <Tooltip title={"Back"}>
-        <LeftOutlined
-          style={{ fontSize: 30 }}
-          onClick={async () =>
-            await router.push(`/remote_ssh/${router.query.id}`)
-          }
+    <ChakraProvider>
+      <div data-testid="container">
+        <Tooltip title={"Back"}>
+          <LeftOutlined
+            style={{ fontSize: 30 }}
+            onClick={async () =>
+              await router.push(`/remote_ssh/${router.query.id}`)
+            }
+          />
+        </Tooltip>
+        <Form
+          schema={jsonSchema}
+          formData={config}
+          onSubmit={async (data) => await onSave(data)}
+          ArrayFieldTemplate={ArrayField}
         />
-      </Tooltip>
-      <Form
-        schema={jsonSchema}
-        formData={config}
-        onSubmit={async (data) => await onSave(data)}
-        ArrayFieldTemplate={ArrayField}
-      />
-    </div>
+      </div>
+    </ChakraProvider>
   );
 }
 

@@ -1,11 +1,11 @@
 import { ipcMain, Notification } from "electron";
 import Logger from "@etherdata-blockchain/logger";
 import { CancelablePromise } from "cancelable-promise";
-import { WorkerStatus } from "@etherdata-blockchain/remote-action";
+import { WorkerStatus, config } from "@etherdata-blockchain/remote-action";
 import { onWorkerCommand, onWorkerError } from "../helpers/worker-callbacks";
 import { ElectronChannels, RemoteActionEvents } from "../../shared/event_names";
-import ConfigParser from "@etherdata-blockchain/remote-action/dist/config";
-import Remote from "@etherdata-blockchain/remote-action/dist/remote";
+
+const ConfigParser = config.default;
 
 // Indicate whether remote ssh is running
 let isRemoteSSHStarted = false;

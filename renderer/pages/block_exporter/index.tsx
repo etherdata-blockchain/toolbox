@@ -1,6 +1,6 @@
 import React from "react";
 import { BlockExporterContext } from "../../models/blockExporter";
-import { Card, Col, Progress, Row } from "antd";
+import { Card, Progress, Row } from "antd";
 import dynamic from "next/dynamic";
 
 const ReactJson =

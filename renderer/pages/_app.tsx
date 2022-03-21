@@ -1,14 +1,14 @@
 import { AppProps } from "next/app";
 import { RemoteSshProvider } from "../models/remoteSSH";
 import { PageLayout } from "../component/pageLayout";
-import "antd/dist/antd.css";
-import "../styles/Global.css";
 import path from "path";
 import { WorkerCheckerProvider } from "../models/workerChecker";
 import { JsonRpcProvider } from "../models/jsonRpc";
 import { BlockExporterProvider } from "../models/blockExporter";
 import { INSTALL_APPS } from "../lib/install_apps";
-import { ChakraProvider } from "@chakra-ui/react";
+
+import "antd/dist/antd.css";
+import "../styles/Global.css";
 
 function ensureFirstBackSlash(str) {
   return str.length > 0 && str.charAt(0) !== "/" ? "/" + str : str;
@@ -23,19 +23,17 @@ function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
 
   return (
-    <ChakraProvider>
-      <BlockExporterProvider>
-        <WorkerCheckerProvider>
-          <RemoteSshProvider>
-            <JsonRpcProvider>
-              <PageLayout menus={INSTALL_APPS}>
-                <Component {...pageProps} />
-              </PageLayout>
-            </JsonRpcProvider>
-          </RemoteSshProvider>
-        </WorkerCheckerProvider>
-      </BlockExporterProvider>
-    </ChakraProvider>
+    <BlockExporterProvider>
+      <WorkerCheckerProvider>
+        <RemoteSshProvider>
+          <JsonRpcProvider>
+            <PageLayout menus={INSTALL_APPS}>
+              <Component {...pageProps} />
+            </PageLayout>
+          </JsonRpcProvider>
+        </RemoteSshProvider>
+      </WorkerCheckerProvider>
+    </BlockExporterProvider>
   );
 }
 

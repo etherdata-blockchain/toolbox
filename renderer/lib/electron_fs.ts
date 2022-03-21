@@ -1,6 +1,5 @@
 import { ipcRenderer } from "electron";
 import { ElectronChannels } from "../../shared/event_names";
-import * as fs from "fs";
 
 export class ElectronFS {
   static async writeFile(filename: string, content: string): Promise<void> {

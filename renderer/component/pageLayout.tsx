@@ -2,7 +2,6 @@
 import * as React from "react";
 import { Button, Card, Layout, Menu, Row, Typography } from "antd";
 import { useRouter } from "next/router";
-import { route } from "next/dist/next-server/server/router";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
@@ -54,7 +53,7 @@ export function PageLayout({ children, menus }: Props) {
             {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
           </Button>
           <Title level={5}>{selectedMenu?.title}</Title>
-          <div style={{ flexGrow: 1 }}> </div>
+          <div style={{ flexGrow: 1 }}></div>
           {selectedMenu?.actions}
         </Row>
       </Card>

@@ -1,13 +1,7 @@
-import React from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
+import React from "react";
 
 function Next() {
-  return (
-    <React.Fragment>
-
-    </React.Fragment>
-  );
-};
+  return <React.Fragment />;
+}
 
 export default Next;

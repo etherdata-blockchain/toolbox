@@ -1,16 +1,11 @@
 // @flow
 import * as React from "react";
-import PouchDB from "pouchdb";
-import { SavedConfiguration } from "../component/remote_ssh/interface";
-import { database_names } from "../../configurations/database_names";
-import { ipcRenderer } from "electron";
-import { WorkerCondition, WorkerStatus } from "worker-checking";
-import { message } from "antd";
 
 interface JsonRpc {
-  setData(port: string, host: string): void;
   port: string;
   host: string;
+
+  setData(port: string, host: string): void;
 }
 
 type Props = {

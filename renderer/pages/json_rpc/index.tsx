@@ -2,16 +2,16 @@
 import * as React from "react";
 import {
   Admin,
-  Miner,
-  Etd,
   Clique,
   Debug,
+  Etd,
   Json_rpc,
   Json_rpc_methods,
+  Miner,
   Personal,
   Real_time,
   Txpool,
-} from "etd-react-ui";
+} from "etherdata-react-ui";
 import { Tabs } from "antd";
 import { JsonRpcContext } from "../../models/jsonRpc";
 

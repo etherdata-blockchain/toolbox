@@ -19,10 +19,15 @@ interface WorkerChecker {
   isFinished: boolean;
   condition: WorkerCondition<any>;
   concurrency: number;
+
   setConcurrency(v: number): void;
+
   start(): void;
+
   stop(): void;
+
   updateSavedRemotes(r: string, c: string): void;
+
   setCondition(c: WorkerCondition<any>): void;
 }
 

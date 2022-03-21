@@ -1,12 +1,7 @@
 // @flow
 import * as React from "react";
 import { Button, Form, Input, Modal, Tooltip } from "antd";
-import {
-  BorderOutlined,
-  DesktopOutlined,
-  RadarChartOutlined,
-} from "@ant-design/icons";
-import { WorkerCheckerContext } from "../../models/workerChecker";
+import { DesktopOutlined } from "@ant-design/icons";
 import { JsonRpcContext } from "../../models/jsonRpc";
 
 type Props = {};

@@ -249,6 +249,7 @@ export class ElectronDialog {
   ): Promise<SaveDialogReturnValue> {
     return ipcRenderer.invoke(ElectronChannels.showSaveDialog, options);
   }
+
   static async showOpenDialog(
     options: OpenDialogOptions
   ): Promise<OpenDialogReturnValue> {
