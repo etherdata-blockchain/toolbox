@@ -3,7 +3,7 @@
   "name": "toolbox",
   "description": "ETD Toolbox",
   "repository": "https://github.com/etherdata-blockchain/toolbox",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "author": "sirily11 <sirily1997@gmail.com>",
   "main": "app/background.js",
   "scripts": {
