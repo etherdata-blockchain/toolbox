@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.3](https://github.com/etherdata-blockchain/toolbox/compare/1.6.2...1.6.3) (2022-03-23)
+
+
+### Bug Fixes
+
+* release action ([#6](https://github.com/etherdata-blockchain/toolbox/issues/6)) ([aa8bb0c](https://github.com/etherdata-blockchain/toolbox/commit/aa8bb0caec8107eb6ff5a05e9560a29e589b44d4))
+
 ## [1.6.2](https://github.com/etherdata-blockchain/toolbox/compare/1.6.1...1.6.2) (2022-03-22)
 
 
