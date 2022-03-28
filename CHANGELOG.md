@@ -1,5 +1,17 @@
 # Changelog
 
+# [2.0.0](https://github.com/etherdata-blockchain/toolbox/compare/1.6.3...2.0.0) (2022-03-28)
+
+
+### Bug Fixes
+
+* use react window to render remote action's list ([#7](https://github.com/etherdata-blockchain/toolbox/issues/7)) ([08b51ec](https://github.com/etherdata-blockchain/toolbox/commit/08b51eca5c522c76b92cb2b0063d15e73e7177f5))
+
+
+### BREAKING CHANGES
+
+* use react window for remote action display
+
 ## [1.6.3](https://github.com/etherdata-blockchain/toolbox/compare/1.6.2...1.6.3) (2022-03-23)
 
 
