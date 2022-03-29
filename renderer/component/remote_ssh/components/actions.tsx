@@ -129,17 +129,20 @@ export function RemoteActions(props: Props) {
         message: err.toString(),
       });
     }
-  }, []);
+  }, [filePath]);
 
   return (
     <Row>
       {router.query.id === undefined && (
-        <Button
-          icon={<PlusOutlined />}
-          shape={"round"}
-          onClick={() => setShowAdd(true)}
-          style={{ marginRight: 10 }}
-        />
+        <Tooltip title={"Add config"}>
+          <Button
+            data-testid="add-btn"
+            icon={<PlusOutlined />}
+            shape={"round"}
+            onClick={() => setShowAdd(true)}
+            style={{ marginRight: 10 }}
+          />
+        </Tooltip>
       )}
       {router.query.id && (
         <Tooltip title={isRunning ? "Stop" : "Start"}>
@@ -216,6 +219,7 @@ export function RemoteActions(props: Props) {
       </Modal>
 
       <Modal
+        data-testid="add-new-config-modal"
         title={"Add New Config"}
         visible={showAdd}
         onOk={async () => await onCreateNewEntry()}
@@ -228,7 +232,7 @@ export function RemoteActions(props: Props) {
             <Input />
           </Form.Item>
           <Form.Item label={"File Path"} name={"filePath"}>
-            <Button onClick={pickFile}>
+            <Button onClick={pickFile} data-testid="open-file-btn">
               Open File
               {filePath && <CheckCircleOutlined style={{ color: "green" }} />}
             </Button>
