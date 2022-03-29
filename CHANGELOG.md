@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/etherdata-blockchain/toolbox/compare/2.0.0...2.0.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* creation problem when selecting new config file ([#8](https://github.com/etherdata-blockchain/toolbox/issues/8)) ([74d306e](https://github.com/etherdata-blockchain/toolbox/commit/74d306ecf3920724a11a1df3b52670d301dc9cf0))
+
 # [2.0.0](https://github.com/etherdata-blockchain/toolbox/compare/1.6.3...2.0.0) (2022-03-28)
 
 
